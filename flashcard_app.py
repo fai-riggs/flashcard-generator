@@ -170,6 +170,8 @@ st.markdown("""
         box-shadow: none !important;
         padding: 0 !important;
         margin: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
     }
     
     .stTextInput > div > div > input[type="password"] {
@@ -182,7 +184,9 @@ st.markdown("""
         padding: 0 !important;
         margin: 0 !important;
         box-shadow: none !important;
-        width: 100% !important;
+        width: auto !important;
+        min-width: 200px !important;
+        display: inline !important;
     }
     
     .stTextInput > div > div > input[type="password"]:focus {
@@ -568,48 +572,74 @@ def check_password() -> bool:
     if st.session_state.authenticated:
         return True
     
-    # Basic terminal prompt with blinking cursor
+    # Basic terminal prompt with blinking cursor - inline with input
     st.markdown("""
     <style>
-    .terminal-prompt {
+    .terminal-wrapper {
+        display: flex;
+        align-items: center;
         font-family: 'Courier New', monospace;
         color: #FF6B35;
         font-size: 16px;
-        display: flex;
-        align-items: center;
         gap: 8px;
+    }
+    .terminal-arrow {
+        color: #FF6B35;
     }
     .blink-cursor {
         animation: blink 1s infinite;
         color: #FF6B35;
+        display: inline-block;
     }
     @keyframes blink {
         0%, 50% { opacity: 1; }
         51%, 100% { opacity: 0; }
     }
-    .terminal-input {
-        background: transparent !important;
-        border: none !important;
-        outline: none !important;
-        color: #FF6B35 !important;
-        font-family: 'Courier New', monospace !important;
-        font-size: 16px !important;
-        padding: 0 !important;
-        box-shadow: none !important;
-        width: 100% !important;
-    }
-    .terminal-input:focus {
-        border: none !important;
-        box-shadow: none !important;
-        outline: none !important;
-    }
-    .terminal-input::placeholder {
-        color: transparent !important;
+    .terminal-input-wrapper {
+        flex: 1;
+        display: inline-flex;
+        align-items: center;
     }
     </style>
-    <div class="terminal-prompt">
-        <span>></span>
+    <div class="terminal-wrapper">
+        <span class="terminal-arrow">></span>
+        <div class="terminal-input-wrapper" id="terminal-input-wrapper">
+            <span class="blink-cursor" id="blink-cursor">_</span>
+        </div>
     </div>
+    <script>
+    // Hide cursor when typing, show when empty
+    setTimeout(function() {
+        var input = document.querySelector('input[type="password"]');
+        var cursor = document.getElementById('blink-cursor');
+        if (input) {
+            input.style.display = 'inline';
+            input.style.width = 'auto';
+            input.style.minWidth = '200px';
+            input.focus();
+            
+            input.addEventListener('input', function() {
+                if (this.value.length > 0) {
+                    cursor.style.display = 'none';
+                } else {
+                    cursor.style.display = 'inline-block';
+                }
+            });
+            
+            input.addEventListener('focus', function() {
+                if (this.value.length === 0) {
+                    cursor.style.display = 'inline-block';
+                }
+            });
+            
+            input.addEventListener('blur', function() {
+                if (this.value.length === 0) {
+                    cursor.style.display = 'inline-block';
+                }
+            });
+        }
+    }, 100);
+    </script>
     """, unsafe_allow_html=True)
     
     password_input = st.text_input(
@@ -617,7 +647,8 @@ def check_password() -> bool:
         type="password",
         key="password_input",
         label_visibility="collapsed",
-        placeholder=""
+        placeholder="",
+        autocomplete="off"
     )
     
     # Check password on Enter (when input changes and is not empty)
