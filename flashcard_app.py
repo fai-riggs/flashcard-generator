@@ -263,6 +263,8 @@ if "airtable_api_key" not in st.session_state:
     st.session_state.airtable_api_key = None
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
+if "temp_base_dir" not in st.session_state:
+    st.session_state.temp_base_dir = None
 
 
 def get_password() -> str:
@@ -336,6 +338,32 @@ def save_uploaded_file(uploaded_file, directory: Path, filename: str) -> Path:
     return file_path
 
 
+def get_temp_session_dir() -> Path:
+    """Get or create a temporary directory for this session."""
+    if st.session_state.temp_base_dir is None:
+        st.session_state.temp_base_dir = Path(tempfile.mkdtemp(prefix="flashcard_session_"))
+    return st.session_state.temp_base_dir
+
+
+def clear_session_data():
+    """Clear all session data and clean up temporary files."""
+    # Clean up temporary directory if it exists
+    if st.session_state.temp_base_dir and st.session_state.temp_base_dir.exists():
+        try:
+            import shutil
+            shutil.rmtree(st.session_state.temp_base_dir)
+        except Exception:
+            pass  # Ignore cleanup errors
+        st.session_state.temp_base_dir = None
+    
+    # Clear all data
+    st.session_state.attendees_data = None
+    st.session_state.headshot_dir = None
+    st.session_state.csv_path = None
+    st.session_state.airtable_url = None
+    st.session_state.airtable_api_key = None
+
+
 def get_image_preview(image_path: Path, max_size: tuple[int, int] = (150, 150)) -> Optional[Image.Image]:
     """Load and resize an image for preview."""
     try:
@@ -398,6 +426,12 @@ def main():
         3. **Review Matches**: Check that names match images correctly
         4. **Generate PDFs**: Create printable flashcards or facebooks
         """)
+        
+        st.markdown("---")
+        if st.button("Clear All Session Data", help="Remove all uploaded files and data from this session"):
+            clear_session_data()
+            st.success("Session data cleared")
+            st.rerun()
 
     # Main content area
     tab1, tab2, tab3, tab4 = st.tabs(["Upload Data", "Manage Images", "Review Attendees", "Generate PDFs"])
@@ -409,8 +443,14 @@ def main():
         data_source = st.radio(
             "Choose data source:",
             ["Upload CSV File", "Import from Airtable"],
-            help="Select how you want to provide attendee data"
+            help="Select how you want to provide attendee data",
+            key="data_source_radio"
         )
+        
+        # Clear data when switching sources
+        if "last_data_source" in st.session_state and st.session_state.last_data_source != data_source:
+            clear_session_data()
+        st.session_state.last_data_source = data_source
         
         st.markdown("---")
         
@@ -424,13 +464,16 @@ def main():
             )
             
             if uploaded_csv is not None:
-                # Save CSV to temp location
-                temp_dir = Path(tempfile.mkdtemp())
-                csv_path = temp_dir / uploaded_csv.name
+                # Save CSV to session temp location
+                session_dir = get_temp_session_dir()
+                csv_path = session_dir / uploaded_csv.name
                 with open(csv_path, "wb") as f:
                     f.write(uploaded_csv.getbuffer())
                 
                 st.session_state.csv_path = csv_path
+                # Clear Airtable data when CSV is uploaded
+                st.session_state.airtable_url = None
+                st.session_state.airtable_api_key = None
                 
                 # Display preview
                 try:
@@ -513,46 +556,50 @@ def main():
             if airtable_url and airtable_api_key:
                 st.session_state.airtable_url = airtable_url
                 st.session_state.airtable_api_key = airtable_api_key
-                st.session_state.csv_path = None  # Clear CSV path when using Airtable
+                # Clear CSV data when Airtable is used
+                st.session_state.csv_path = None
+                # Clean up any existing temp files
+                if st.session_state.temp_base_dir and st.session_state.temp_base_dir.exists():
+                    try:
+                        import shutil
+                        for item in st.session_state.temp_base_dir.iterdir():
+                            if item.is_file() and item.suffix == '.csv':
+                                item.unlink()
+                    except Exception:
+                        pass
 
         # Headshot Directory Selection
         st.subheader("Headshot Images")
+        st.markdown("""
+        <div style="background: rgba(255, 107, 53, 0.1); border-left: 4px solid #FF6B35; padding: 1rem; margin-bottom: 1rem; font-family: 'Courier New', monospace;">
+            <strong style="color: #FF6B35;">[INFO]</strong> Images are stored temporarily in session memory and will be cleared when you switch data sources or close the session.
+        </div>
+        """, unsafe_allow_html=True)
         
-        col1, col2 = st.columns(2)
+        # Always use session temp directory for images
+        if st.session_state.headshot_dir is None:
+            session_dir = get_temp_session_dir()
+            headshots_dir = session_dir / "headshots"
+            headshots_dir.mkdir(exist_ok=True)
+            st.session_state.headshot_dir = headshots_dir
         
-        with col1:
-            use_existing = st.checkbox("Use existing headshots directory", value=True)
-            if use_existing:
-                headshot_dir_input = st.text_input(
-                    "Headshots directory path",
-                    value="headshots",
-                    help="Path to directory containing headshot images",
-                )
-                if headshot_dir_input:
-                    headshot_dir = Path(headshot_dir_input)
-                    if headshot_dir.exists():
-                        st.session_state.headshot_dir = headshot_dir
-                        image_count = len(list(headshot_dir.glob("*")))
-                        st.info(f"Found {image_count} files in directory")
-                    else:
-                        st.warning(f"Directory not found: {headshot_dir}")
-        
-        with col2:
-            st.markdown("**Or create new directory**")
-            new_dir_name = st.text_input("New directory name", value="headshots")
-            if st.button("Create Directory"):
-                new_dir = Path(new_dir_name)
-                new_dir.mkdir(parents=True, exist_ok=True)
-                st.session_state.headshot_dir = new_dir
-                st.success(f"Created directory: {new_dir}")
+        if st.session_state.headshot_dir.exists():
+            image_count = len(list(st.session_state.headshot_dir.glob("*")))
+            st.info(f"Temporary session directory: {len(list(st.session_state.headshot_dir.glob('*')))} images")
 
     with tab2:
         st.header("Manage Headshot Images")
         
         if st.session_state.headshot_dir is None:
-            st.warning("Please set up a headshots directory in the Upload Data tab first.")
+            st.warning("Please upload a CSV or connect to Airtable first to initialize the session.")
         else:
             headshot_dir = st.session_state.headshot_dir
+            
+            st.markdown("""
+            <div style="background: rgba(255, 107, 53, 0.1); border-left: 4px solid #FF6B35; padding: 1rem; margin-bottom: 1rem; font-family: 'Courier New', monospace;">
+                <strong style="color: #FF6B35;">[NOTE]</strong> Images are stored in a temporary session directory and will be automatically cleared when you switch data sources.
+            </div>
+            """, unsafe_allow_html=True)
             
             # Upload new images
             st.subheader("Upload New Images")
