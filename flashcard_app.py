@@ -172,6 +172,7 @@ st.markdown("""
         margin: 0 !important;
         display: inline-flex !important;
         align-items: center !important;
+        vertical-align: middle !important;
     }
     
     .stTextInput > div > div > input[type="password"] {
@@ -187,6 +188,12 @@ st.markdown("""
         width: auto !important;
         min-width: 200px !important;
         display: inline !important;
+        vertical-align: middle !important;
+    }
+    
+    .stTextInput {
+        display: inline !important;
+        vertical-align: middle !important;
     }
     
     .stTextInput > div > div > input[type="password"]:focus {
@@ -572,10 +579,10 @@ def check_password() -> bool:
     if st.session_state.authenticated:
         return True
     
-    # Basic terminal prompt with blinking cursor
+    # Basic terminal prompt with blinking cursor - inline with input
     st.markdown("""
     <style>
-    .terminal-wrapper {
+    .terminal-line {
         display: flex;
         align-items: center;
         font-family: 'Courier New', monospace;
@@ -593,7 +600,7 @@ def check_password() -> bool:
         51%, 100% { opacity: 0; }
     }
     </style>
-    <div class="terminal-wrapper">
+    <div class="terminal-line">
         <span>></span>
         <span class="blink-cursor" id="blink-cursor">_</span>
     </div>
@@ -601,7 +608,12 @@ def check_password() -> bool:
     setTimeout(function() {
         var input = document.querySelector('input[type="password"]');
         var cursor = document.getElementById('blink-cursor');
-        if (input && cursor) {
+        var terminalLine = document.querySelector('.terminal-line');
+        if (input && cursor && terminalLine) {
+            // Move input into terminal line
+            input.style.display = 'inline';
+            input.style.verticalAlign = 'middle';
+            terminalLine.appendChild(input);
             input.focus();
             input.addEventListener('input', function() {
                 cursor.style.display = this.value.length > 0 ? 'none' : 'inline-block';
