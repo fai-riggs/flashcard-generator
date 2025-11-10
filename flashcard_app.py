@@ -35,7 +35,7 @@ from generate_flashcards import (
 # Page configuration
 st.set_page_config(
     page_title="Flashcard & Facebook Generator",
-    page_icon="📇",
+    page_icon="",
     layout="wide",
 )
 
@@ -354,7 +354,7 @@ def main():
     # Hacker-style header
     st.markdown("""
     <div style="text-align: center; padding: 2rem 0; border-bottom: 2px solid #FF6B35; margin-bottom: 2rem;">
-        <h1 style="margin: 0; font-size: 3rem; text-shadow: 0 0 14px #FF6B35;">⚡ FLASHCARD GENERATOR ⚡</h1>
+        <h1 style="margin: 0; font-size: 3rem; text-shadow: 0 0 14px #FF6B35;">FLASHCARD GENERATOR</h1>
         <p style="color: #FF6B35; font-family: 'Courier New', monospace; letter-spacing: 3px; margin-top: 1rem;">
             [SYSTEM] INITIALIZING... [READY]
         </p>
@@ -391,7 +391,7 @@ def main():
         )
         
         st.markdown("---")
-        st.markdown("### 📚 Help")
+        st.markdown("### Help")
         st.markdown("""
         1. **Upload CSV**: CSV with columns: First Name, Last Name, Organization, Job Title
         2. **Upload Images**: Add headshot images (named as FirstName_LastName.ext)
@@ -400,7 +400,7 @@ def main():
         """)
 
     # Main content area
-    tab1, tab2, tab3, tab4 = st.tabs(["📄 Upload Data", "🖼️ Manage Images", "👥 Review Attendees", "📑 Generate PDFs"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Upload Data", "Manage Images", "Review Attendees", "Generate PDFs"])
 
     with tab1:
         st.header("Upload Attendee Data")
@@ -408,13 +408,13 @@ def main():
         # Data source selection
         data_source = st.radio(
             "Choose data source:",
-            ["📄 Upload CSV File", "🔗 Import from Airtable"],
+            ["Upload CSV File", "Import from Airtable"],
             help="Select how you want to provide attendee data"
         )
         
         st.markdown("---")
         
-        if data_source == "📄 Upload CSV File":
+        if data_source == "Upload CSV File":
             # CSV Upload
             st.subheader("CSV File")
             uploaded_csv = st.file_uploader(
@@ -435,16 +435,16 @@ def main():
                 # Display preview
                 try:
                     df = pd.read_csv(csv_path, encoding="utf-8-sig")
-                    st.success(f"✅ CSV loaded: {len(df)} rows")
+                    st.success(f"CSV loaded: {len(df)} rows")
                     st.dataframe(df.head(10), use_container_width=True)
                     
                     # Check required columns
                     required_cols = ["First Name", "Last Name"]
                     missing_cols = [col for col in required_cols if col not in df.columns]
                     if missing_cols:
-                        st.error(f"❌ Missing required columns: {', '.join(missing_cols)}")
-                    else:
-                        st.info("✅ Required columns found")
+                        st.error(f"Missing required columns: {', '.join(missing_cols)}")
+                else:
+                    st.info("Required columns found")
                 except Exception as e:
                     st.error(f"Error reading CSV: {e}")
         
@@ -470,7 +470,7 @@ def main():
                 airtable_api_key = ""
             
             if not airtable_api_key:
-                st.info("💡 **API Key Setup:** Add your Airtable API key in Streamlit Cloud secrets as `airtable_api_key`, or enter it below.")
+                st.info("**API Key Setup:** Add your Airtable API key in Streamlit Cloud secrets as `airtable_api_key`, or enter it below.")
                 airtable_api_key = st.text_input(
                     "Airtable API Key",
                     type="password",
@@ -478,17 +478,17 @@ def main():
                     value=airtable_api_key
                 )
             else:
-                st.success("✅ API key loaded from secrets")
+                st.success("API key loaded from secrets")
             
             if airtable_url and airtable_api_key:
-                if st.button("🔍 Test Airtable Connection", type="primary"):
+                if st.button("Test Airtable Connection", type="primary"):
                     with st.spinner("Connecting to Airtable..."):
                         try:
                             from generate_flashcards import parse_airtable_url
                             parsed = parse_airtable_url(airtable_url)
                             if parsed:
                                 base_id, table_id = parsed
-                                st.success(f"✅ URL parsed successfully!")
+                                st.success(f"URL parsed successfully!")
                                 st.info(f"**Base ID:** `{base_id[:8]}...`  **Table ID:** `{table_id[:8]}...`")
                                 
                                 # Try to fetch a sample record
@@ -498,16 +498,16 @@ def main():
                                     table = api.table(base_id, table_id)
                                     sample = table.first()
                                     if sample:
-                                        st.success(f"✅ Connection successful! Found table with fields.")
+                                        st.success(f"Connection successful! Found table with fields.")
                                         if "fields" in sample:
                                             st.info(f"**Available fields:** {', '.join(list(sample['fields'].keys())[:10])}")
                                 except Exception as e:
-                                    st.error(f"❌ Could not connect to Airtable: {e}")
-                                    st.info("💡 Make sure your API key has access to this base.")
+                                    st.error(f"Could not connect to Airtable: {e}")
+                                    st.info("Make sure your API key has access to this base.")
                             else:
-                                st.error("❌ Could not parse Airtable URL. Make sure it's a valid Airtable link.")
+                                st.error("Could not parse Airtable URL. Make sure it's a valid Airtable link.")
                         except Exception as e:
-                            st.error(f"❌ Error: {e}")
+                            st.error(f"Error: {e}")
             
             # Store in session state for later use
             if airtable_url and airtable_api_key:
@@ -533,9 +533,9 @@ def main():
                     if headshot_dir.exists():
                         st.session_state.headshot_dir = headshot_dir
                         image_count = len(list(headshot_dir.glob("*")))
-                        st.info(f"📁 Found {image_count} files in directory")
+                        st.info(f"Found {image_count} files in directory")
                     else:
-                        st.warning(f"⚠️ Directory not found: {headshot_dir}")
+                        st.warning(f"Directory not found: {headshot_dir}")
         
         with col2:
             st.markdown("**Or create new directory**")
@@ -544,13 +544,13 @@ def main():
                 new_dir = Path(new_dir_name)
                 new_dir.mkdir(parents=True, exist_ok=True)
                 st.session_state.headshot_dir = new_dir
-                st.success(f"✅ Created directory: {new_dir}")
+                st.success(f"Created directory: {new_dir}")
 
     with tab2:
         st.header("Manage Headshot Images")
         
         if st.session_state.headshot_dir is None:
-            st.warning("⚠️ Please set up a headshots directory in the Upload Data tab first.")
+            st.warning("Please set up a headshots directory in the Upload Data tab first.")
         else:
             headshot_dir = st.session_state.headshot_dir
             
@@ -566,7 +566,7 @@ def main():
             if uploaded_images:
                 for uploaded_file in uploaded_images:
                     file_path = save_uploaded_file(uploaded_file, headshot_dir, uploaded_file.name)
-                    st.success(f"✅ Saved: {uploaded_file.name}")
+                    st.success(f"Saved: {uploaded_file.name}")
             
             # Display existing images
             st.subheader("Existing Images")
@@ -584,7 +584,7 @@ def main():
                             if preview:
                                 st.image(preview, use_container_width=True)
                                 st.caption(img_path.name)
-                                if st.button("🗑️", key=f"delete_{idx}", help="Delete image"):
+                                if st.button("Delete", key=f"delete_{idx}", help="Delete image"):
                                     img_path.unlink()
                                     st.rerun()
                 else:
@@ -600,9 +600,9 @@ def main():
         )
         
         if not has_data_source or st.session_state.headshot_dir is None:
-            st.warning("⚠️ Please upload CSV or connect to Airtable, and set headshots directory first.")
+            st.warning("Please upload CSV or connect to Airtable, and set headshots directory first.")
         else:
-            if st.button("🔄 Load & Match Attendees"):
+            if st.button("Load & Match Attendees"):
                 with st.spinner("Loading attendees and matching images..."):
                     try:
                         # Load from Airtable or CSV
@@ -612,15 +612,15 @@ def main():
                                 st.session_state.airtable_api_key,
                                 st.session_state.headshot_dir,
                             )
-                            st.info("📡 Loaded from Airtable")
+                            st.info("Loaded from Airtable")
                         elif st.session_state.csv_path:
                             attendees = load_attendees(
                                 st.session_state.csv_path,
                                 st.session_state.headshot_dir,
                             )
-                            st.info("📄 Loaded from CSV")
+                            st.info("Loaded from CSV")
                         else:
-                            st.error("❌ No data source available")
+                            st.error("No data source available")
                             attendees = []
                         
                         # Apply FAI exclusion if enabled
@@ -629,16 +629,16 @@ def main():
                             attendees = filter_attendees(attendees, DEFAULT_EXCLUDED_ORGANIZATIONS)
                             excluded_count = original_count - len(attendees)
                             if excluded_count > 0:
-                                st.info(f"ℹ️ Excluded {excluded_count} attendee(s) from Foundation for American Innovation")
+                                st.info(f"Excluded {excluded_count} attendee(s) from Foundation for American Innovation")
                         
                         st.session_state.attendees_data = attendees
                         
                         if attendees:
-                            st.success(f"✅ Matched {len(attendees)} attendees with images")
+                            st.success(f"Matched {len(attendees)} attendees with images")
                         else:
-                            st.error("❌ No attendees matched. Check data format and image filenames.")
+                            st.error("No attendees matched. Check data format and image filenames.")
                     except Exception as e:
-                        st.error(f"❌ Error loading attendees: {e}")
+                        st.error(f"Error loading attendees: {e}")
                         st.exception(e)
             
             if st.session_state.attendees_data:
@@ -681,7 +681,7 @@ def main():
         st.header("Generate PDFs")
         
         if st.session_state.attendees_data is None or len(st.session_state.attendees_data) == 0:
-            st.warning("⚠️ Please load attendees in the Review Attendees tab first.")
+            st.warning("Please load attendees in the Review Attendees tab first.")
         else:
             attendees = st.session_state.attendees_data
             
@@ -691,7 +691,7 @@ def main():
                 attendees = filter_attendees(attendees, DEFAULT_EXCLUDED_ORGANIZATIONS)
                 excluded_count = original_count - len(attendees)
                 if excluded_count > 0:
-                    st.info(f"ℹ️ Excluding {excluded_count} attendee(s) from Foundation for American Innovation")
+                    st.info(f"Excluding {excluded_count} attendee(s) from Foundation for American Innovation")
             
             st.info(f"Ready to generate PDFs for {len(attendees)} attendees")
             
@@ -717,7 +717,7 @@ def main():
             st.subheader("Facebook Options")
             generate_facebooks = st.checkbox("Generate Facebook Proof", value=False, help="Five attendees per page, headshot left, details right")
             
-            if st.button("🚀 Generate PDFs", type="primary"):
+            if st.button("Generate PDFs", type="primary"):
                 with st.spinner("Generating PDFs..."):
                     attendees_to_use = attendees[:limit_cards] if limit_cards > 0 else attendees
                     
@@ -751,12 +751,12 @@ def main():
                             pdf_files["Facebook Proof PDF"] = facebooks_path
                         
                         # Display download buttons
-                        st.success(f"✅ Generated {len(pdf_files)} PDF file(s)")
+                        st.success(f"Generated {len(pdf_files)} PDF file(s)")
                         
                         for pdf_name, pdf_path in pdf_files.items():
                             with open(pdf_path, "rb") as pdf_file:
                                 st.download_button(
-                                    label=f"📥 Download {pdf_name}",
+                                    label=f"Download {pdf_name}",
                                     data=pdf_file.read(),
                                     file_name=pdf_path.name,
                                     mime="application/pdf",
@@ -766,7 +766,7 @@ def main():
                         st.balloons()
                         
                     except Exception as e:
-                        st.error(f"❌ Error generating PDFs: {e}")
+                        st.error(f"Error generating PDFs: {e}")
                         st.exception(e)
 
 
