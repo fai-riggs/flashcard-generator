@@ -508,54 +508,19 @@ def check_password() -> bool:
     if st.session_state.authenticated:
         return True
     
-    # eDEX-UI style terminal login screen
-    st.markdown("""
-    <style>
-    .edex-terminal {
-        background-color: #000000;
-        color: #FF6B35;
-        font-family: 'Courier New', monospace;
-        padding: 3rem;
-        min-height: 80vh;
-        font-size: 16px;
-        line-height: 1.8;
-        border: 2px solid #FF6B35;
-        box-shadow: none !important;
-    }
-    .edex-prompt {
-        color: #FF6B35;
-        text-shadow: none !important;
-        font-weight: bold;
-        letter-spacing: 1px;
-    }
-    </style>
-    <div class="edex-terminal">
-    <pre class="edex-prompt">> ACCESS DENIED
-> AUTHENTICATION REQUIRED
-
-</pre>
-    """, unsafe_allow_html=True)
-    
+    # Simple password input only
     password_input = st.text_input(
-        "> PASSWORD:",
+        "",
         type="password",
         key="password_input",
-        label_visibility="visible"
+        label_visibility="collapsed",
+        placeholder=""
     )
     
-    if st.button("> AUTHENTICATE"):
+    if st.button("", key="auth_button"):
         if password_input == get_password():
             st.session_state.authenticated = True
             st.rerun()
-        else:
-            st.markdown("""
-            <pre class="edex-prompt" style="margin-top: 1rem;">> ACCESS DENIED - INVALID CREDENTIALS</pre>
-            """, unsafe_allow_html=True)
-    
-    st.markdown("""
-    <pre class="edex-prompt" style="margin-top: 2rem; opacity: 0.7;">> [SYSTEM] Contact administrator for access</pre>
-    </div>
-    """, unsafe_allow_html=True)
     
     return False
 
