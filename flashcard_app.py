@@ -139,8 +139,15 @@ st.markdown("""
         outline: none !important;
     }
     
-    /* Password input on login screen - no border */
-    input[type="password"][data-baseweb="input"] {
+    /* Password input on login screen - completely invisible */
+    .stTextInput > div > div[data-baseweb="base-input"] {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+    
+    .stTextInput > div > div > input[type="password"] {
         background: transparent !important;
         border: none !important;
         outline: none !important;
@@ -149,15 +156,22 @@ st.markdown("""
         font-size: 16px !important;
         padding: 0 !important;
         box-shadow: none !important;
+        width: 100% !important;
     }
     
-    input[type="password"][data-baseweb="input"]:focus {
+    .stTextInput > div > div > input[type="password"]:focus {
         border: none !important;
         box-shadow: none !important;
         outline: none !important;
     }
     
-    .stTextInput > div > div[data-baseweb="base-input"] {
+    /* Hide the eye icon */
+    .stTextInput button {
+        display: none !important;
+    }
+    
+    /* Hide any borders or containers */
+    .stTextInput > div {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
