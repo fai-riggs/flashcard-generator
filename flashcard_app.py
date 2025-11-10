@@ -1200,7 +1200,7 @@ def main():
                     total_tasks = sum([generate_combined, generate_fronts, generate_backs, generate_guides, generate_facebooks])
                     current_task = 0
                     
-                        if generate_combined:
+                    if generate_combined:
                         current_task += 1
                         loading_placeholder.markdown(show_hacker_loader(f"GENERATING COMBINED PDF... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
                             combined_path = temp_dir / "flashcards_duplex.pdf"
@@ -1208,7 +1208,7 @@ def main():
                             pdf_files["Combined PDF"] = combined_path
                         time.sleep(0.2)
                         
-                        if generate_fronts:
+                    if generate_fronts:
                         current_task += 1
                         loading_placeholder.markdown(show_hacker_loader(f"GENERATING FRONTS... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
                             fronts_path = temp_dir / "flashcards_fronts.pdf"
@@ -1216,7 +1216,7 @@ def main():
                             pdf_files["Fronts PDF"] = fronts_path
                         time.sleep(0.2)
                         
-                        if generate_backs:
+                    if generate_backs:
                         current_task += 1
                         loading_placeholder.markdown(show_hacker_loader(f"GENERATING BACKS... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
                             backs_path = temp_dir / "flashcards_backs.pdf"
@@ -1224,7 +1224,7 @@ def main():
                             pdf_files["Backs PDF"] = backs_path
                         time.sleep(0.2)
                         
-                        if generate_guides:
+                    if generate_guides:
                         current_task += 1
                         loading_placeholder.markdown(show_hacker_loader(f"GENERATING CUT GUIDES... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
                             guides_path = temp_dir / "flashcards_cut_guides.pdf"
