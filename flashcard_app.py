@@ -417,50 +417,42 @@ def check_password() -> bool:
     if st.session_state.authenticated:
         return True
     
-    # Hacker-style password input form
+    # Simple terminal-style password input
     st.markdown("""
-    <div style="text-align: center; padding: 3rem 0;">
-        <h1 style="color: #FF6B35; text-shadow: 0 0 7px #FF6B35; font-family: 'Courier New', monospace; letter-spacing: 5px;">
-            [ACCESS DENIED]
-        </h1>
-        <p style="color: #E0E0E0; font-family: 'Courier New', monospace; margin-top: 2rem; letter-spacing: 2px;">
-            > AUTHENTICATION REQUIRED
-        </p>
-    </div>
+    <style>
+    .terminal-container {
+        font-family: 'Courier New', monospace;
+        color: #FF6B35;
+        background: #0A0E27;
+        padding: 2rem;
+        min-height: 60vh;
+    }
+    </style>
+    <div class="terminal-container">
     """, unsafe_allow_html=True)
     
-    with st.container():
-        col1, col2, col3 = st.columns([1, 2, 1])
-        with col2:
-            st.markdown("""
-            <div style="background: rgba(26, 31, 58, 0.8); border: 2px solid #FF6B35; border-radius: 8px; padding: 2rem; box-shadow: 0 0 30px rgba(255, 107, 53, 0.3);">
-                <p style="color: #FF6B35; font-family: 'Courier New', monospace; text-align: center; margin-bottom: 1.5rem;">
-                    [ENTER CREDENTIALS]
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            password_input = st.text_input(
-                "> PASSWORD:",
-                type="password",
-                key="password_input",
-                label_visibility="visible"
-            )
-            
-            if st.button("> AUTHENTICATE", type="primary"):
-                if password_input == get_password():
-                    st.session_state.authenticated = True
-                    st.rerun()
-                else:
-                    st.error("> ACCESS DENIED - INVALID CREDENTIALS")
-            
-            st.markdown("""
-            <div style="margin-top: 2rem; text-align: center;">
-                <p style="color: #666; font-family: 'Courier New', monospace; font-size: 0.8rem;">
-                    [SYSTEM] Contact administrator for access credentials
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
+    st.markdown("`> ACCESS DENIED`")
+    st.markdown("`> AUTHENTICATION REQUIRED`")
+    st.markdown("")
+    
+    password_input = st.text_input(
+        "> PASSWORD:",
+        type="password",
+        key="password_input",
+        label_visibility="visible"
+    )
+    
+    if st.button("> AUTHENTICATE"):
+        if password_input == get_password():
+            st.session_state.authenticated = True
+            st.rerun()
+        else:
+            st.markdown("`> ACCESS DENIED - INVALID CREDENTIALS`")
+    
+    st.markdown("")
+    st.markdown("`> [SYSTEM] Contact administrator for access`")
+    
+    st.markdown("</div>", unsafe_allow_html=True)
     
     return False
 
