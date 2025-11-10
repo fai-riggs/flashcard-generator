@@ -607,7 +607,7 @@ def download_image_from_url(url: str, directory: Path, filename: str) -> Optiona
             file_path.unlink()
             return None
         
-    return file_path
+        return file_path
     except Exception as e:
         st.error(f"Error downloading image from {url}: {e}")
         return None
