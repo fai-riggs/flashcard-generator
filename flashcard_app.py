@@ -18,6 +18,7 @@ from PIL import Image
 # Import the flashcard generation functions
 from generate_flashcards import (
     load_attendees,
+    load_attendees_from_airtable,
     draw_fronts,
     draw_backs,
     draw_combined,
@@ -45,6 +46,10 @@ if "headshot_dir" not in st.session_state:
     st.session_state.headshot_dir = None
 if "csv_path" not in st.session_state:
     st.session_state.csv_path = None
+if "airtable_url" not in st.session_state:
+    st.session_state.airtable_url = None
+if "airtable_api_key" not in st.session_state:
+    st.session_state.airtable_api_key = None
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
@@ -147,38 +152,115 @@ def main():
     with tab1:
         st.header("Upload Attendee Data")
         
-        # CSV Upload
-        st.subheader("CSV File")
-        uploaded_csv = st.file_uploader(
-            "Upload attendee CSV file",
-            type=["csv"],
-            help="CSV should have columns: First Name, Last Name, Organization, Job Title",
+        # Data source selection
+        data_source = st.radio(
+            "Choose data source:",
+            ["📄 Upload CSV File", "🔗 Import from Airtable"],
+            help="Select how you want to provide attendee data"
         )
         
-        if uploaded_csv is not None:
-            # Save CSV to temp location
-            temp_dir = Path(tempfile.mkdtemp())
-            csv_path = temp_dir / uploaded_csv.name
-            with open(csv_path, "wb") as f:
-                f.write(uploaded_csv.getbuffer())
+        st.markdown("---")
+        
+        if data_source == "📄 Upload CSV File":
+            # CSV Upload
+            st.subheader("CSV File")
+            uploaded_csv = st.file_uploader(
+                "Upload attendee CSV file",
+                type=["csv"],
+                help="CSV should have columns: First Name, Last Name, Organization, Job Title",
+            )
             
-            st.session_state.csv_path = csv_path
-            
-            # Display preview
-            try:
-                df = pd.read_csv(csv_path, encoding="utf-8-sig")
-                st.success(f"✅ CSV loaded: {len(df)} rows")
-                st.dataframe(df.head(10), use_container_width=True)
+            if uploaded_csv is not None:
+                # Save CSV to temp location
+                temp_dir = Path(tempfile.mkdtemp())
+                csv_path = temp_dir / uploaded_csv.name
+                with open(csv_path, "wb") as f:
+                    f.write(uploaded_csv.getbuffer())
                 
-                # Check required columns
-                required_cols = ["First Name", "Last Name"]
-                missing_cols = [col for col in required_cols if col not in df.columns]
-                if missing_cols:
-                    st.error(f"❌ Missing required columns: {', '.join(missing_cols)}")
-                else:
-                    st.info("✅ Required columns found")
-            except Exception as e:
-                st.error(f"Error reading CSV: {e}")
+                st.session_state.csv_path = csv_path
+                
+                # Display preview
+                try:
+                    df = pd.read_csv(csv_path, encoding="utf-8-sig")
+                    st.success(f"✅ CSV loaded: {len(df)} rows")
+                    st.dataframe(df.head(10), use_container_width=True)
+                    
+                    # Check required columns
+                    required_cols = ["First Name", "Last Name"]
+                    missing_cols = [col for col in required_cols if col not in df.columns]
+                    if missing_cols:
+                        st.error(f"❌ Missing required columns: {', '.join(missing_cols)}")
+                    else:
+                        st.info("✅ Required columns found")
+                except Exception as e:
+                    st.error(f"Error reading CSV: {e}")
+        
+        else:  # Airtable import
+            st.subheader("Import from Airtable")
+            st.markdown("""
+            **How to use:**
+            1. Open your Airtable base and copy the URL from your browser
+            2. Paste it below
+            3. Make sure your Airtable has columns for: First Name, Last Name, Organization, Job Title
+            """)
+            
+            airtable_url = st.text_input(
+                "Airtable URL",
+                placeholder="https://airtable.com/appXXXXX/tableYYYYY/...",
+                help="Paste the full Airtable URL or share link here"
+            )
+            
+            # Get API key from secrets or allow input
+            try:
+                airtable_api_key = st.secrets.get("airtable_api_key", "")
+            except (AttributeError, FileNotFoundError):
+                airtable_api_key = ""
+            
+            if not airtable_api_key:
+                st.info("💡 **API Key Setup:** Add your Airtable API key in Streamlit Cloud secrets as `airtable_api_key`, or enter it below.")
+                airtable_api_key = st.text_input(
+                    "Airtable API Key",
+                    type="password",
+                    help="Get your API key from https://airtable.com/create/tokens",
+                    value=airtable_api_key
+                )
+            else:
+                st.success("✅ API key loaded from secrets")
+            
+            if airtable_url and airtable_api_key:
+                if st.button("🔍 Test Airtable Connection", type="primary"):
+                    with st.spinner("Connecting to Airtable..."):
+                        try:
+                            from generate_flashcards import parse_airtable_url
+                            parsed = parse_airtable_url(airtable_url)
+                            if parsed:
+                                base_id, table_id = parsed
+                                st.success(f"✅ URL parsed successfully!")
+                                st.info(f"**Base ID:** `{base_id[:8]}...`  **Table ID:** `{table_id[:8]}...`")
+                                
+                                # Try to fetch a sample record
+                                try:
+                                    from pyairtable import Api
+                                    api = Api(airtable_api_key)
+                                    table = api.table(base_id, table_id)
+                                    sample = table.first()
+                                    if sample:
+                                        st.success(f"✅ Connection successful! Found table with fields.")
+                                        if "fields" in sample:
+                                            st.info(f"**Available fields:** {', '.join(list(sample['fields'].keys())[:10])}")
+                                except Exception as e:
+                                    st.error(f"❌ Could not connect to Airtable: {e}")
+                                    st.info("💡 Make sure your API key has access to this base.")
+                            else:
+                                st.error("❌ Could not parse Airtable URL. Make sure it's a valid Airtable link.")
+                        except Exception as e:
+                            st.error(f"❌ Error: {e}")
+            
+            # Store in session state for later use
+            if airtable_url and airtable_api_key:
+                st.session_state.airtable_url = airtable_url
+                st.session_state.airtable_api_key = airtable_api_key
+                st.session_state.csv_path = None  # Clear CSV path when using Airtable
 
         # Headshot Directory Selection
         st.subheader("Headshot Images")
@@ -260,30 +342,51 @@ def main():
     with tab3:
         st.header("Review Attendees & Matches")
         
-        if st.session_state.csv_path is None or st.session_state.headshot_dir is None:
-            st.warning("⚠️ Please upload CSV and set headshots directory first.")
+        has_data_source = st.session_state.csv_path is not None or (
+            st.session_state.airtable_url is not None and st.session_state.airtable_api_key
+        )
+        
+        if not has_data_source or st.session_state.headshot_dir is None:
+            st.warning("⚠️ Please upload CSV or connect to Airtable, and set headshots directory first.")
         else:
             if st.button("🔄 Load & Match Attendees"):
                 with st.spinner("Loading attendees and matching images..."):
-                    attendees = load_attendees(
-                        st.session_state.csv_path,
-                        st.session_state.headshot_dir,
-                    )
-                    
-                    # Apply FAI exclusion if enabled
-                    if exclude_fai:
-                        original_count = len(attendees)
-                        attendees = filter_attendees(attendees, DEFAULT_EXCLUDED_ORGANIZATIONS)
-                        excluded_count = original_count - len(attendees)
-                        if excluded_count > 0:
-                            st.info(f"ℹ️ Excluded {excluded_count} attendee(s) from Foundation for American Innovation")
-                    
-                    st.session_state.attendees_data = attendees
-                    
-                    if attendees:
-                        st.success(f"✅ Matched {len(attendees)} attendees with images")
-                    else:
-                        st.error("❌ No attendees matched. Check CSV format and image filenames.")
+                    try:
+                        # Load from Airtable or CSV
+                        if st.session_state.airtable_url and st.session_state.airtable_api_key:
+                            attendees = load_attendees_from_airtable(
+                                st.session_state.airtable_url,
+                                st.session_state.airtable_api_key,
+                                st.session_state.headshot_dir,
+                            )
+                            st.info("📡 Loaded from Airtable")
+                        elif st.session_state.csv_path:
+                            attendees = load_attendees(
+                                st.session_state.csv_path,
+                                st.session_state.headshot_dir,
+                            )
+                            st.info("📄 Loaded from CSV")
+                        else:
+                            st.error("❌ No data source available")
+                            attendees = []
+                        
+                        # Apply FAI exclusion if enabled
+                        if exclude_fai:
+                            original_count = len(attendees)
+                            attendees = filter_attendees(attendees, DEFAULT_EXCLUDED_ORGANIZATIONS)
+                            excluded_count = original_count - len(attendees)
+                            if excluded_count > 0:
+                                st.info(f"ℹ️ Excluded {excluded_count} attendee(s) from Foundation for American Innovation")
+                        
+                        st.session_state.attendees_data = attendees
+                        
+                        if attendees:
+                            st.success(f"✅ Matched {len(attendees)} attendees with images")
+                        else:
+                            st.error("❌ No attendees matched. Check data format and image filenames.")
+                    except Exception as e:
+                        st.error(f"❌ Error loading attendees: {e}")
+                        st.exception(e)
             
             if st.session_state.attendees_data:
                 attendees = st.session_state.attendees_data

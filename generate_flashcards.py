@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -26,6 +27,11 @@ from reportlab.lib import colors
 from reportlab.lib.units import inch
 from reportlab.lib.utils import ImageReader, simpleSplit
 from reportlab.pdfgen import canvas
+
+try:
+    from pyairtable import Api
+except ImportError:
+    Api = None
 
 
 CARD_WIDTH = 5 * inch
@@ -172,6 +178,126 @@ def load_attendees(
             file=sys.stderr,
         )
 
+    return attendees
+
+
+def parse_airtable_url(url: str) -> Optional[tuple[str, str]]:
+    """Parse Airtable URL to extract base ID and table name/ID.
+    
+    Supports formats like:
+    - https://airtable.com/appXXXXX/tableYYYYY/...
+    - https://airtable.com/appXXXXX/tblYYYYY/...
+    
+    Returns:
+        Tuple of (base_id, table_id) or None if parsing fails
+    """
+    # Match patterns like /appXXXXXXXXXXXXXX/tableYYYYYYYYYYYYYY or /appXXXXXXXXXXXXXX/tblYYYYYYYYYYYYYY
+    patterns = [
+        r'/app([a-zA-Z0-9]+)/(?:table|tbl)([a-zA-Z0-9]+)',
+        r'airtable\.com/app([a-zA-Z0-9]+)/(?:table|tbl)([a-zA-Z0-9]+)',
+    ]
+    
+    for pattern in patterns:
+        match = re.search(pattern, url)
+        if match:
+            return (match.group(1), match.group(2))
+    
+    return None
+
+
+def load_attendees_from_airtable(
+    airtable_url: str,
+    airtable_api_key: str,
+    headshot_dir: Path,
+    *,
+    field_mapping: Optional[dict[str, str]] = None,
+) -> list[Attendee]:
+    """Load attendees from Airtable.
+    
+    Args:
+        airtable_url: Full Airtable URL or share link
+        airtable_api_key: Airtable API key
+        headshot_dir: Directory containing headshot images
+        field_mapping: Optional mapping of Airtable field names to expected names.
+                     Defaults to common variations.
+    
+    Returns:
+        List of Attendee objects
+    """
+    if Api is None:
+        raise ImportError("pyairtable is required for Airtable import. Install with: pip install pyairtable")
+    
+    # Default field mapping (case-insensitive matching)
+    default_mapping = {
+        "first_name": ["First Name", "First", "First Name", "firstName", "first_name"],
+        "last_name": ["Last Name", "Last", "LastName", "lastName", "last_name"],
+        "organization": ["Organization", "Org", "Company", "organization", "company"],
+        "title": ["Job Title", "Title", "Position", "jobTitle", "job_title", "title"],
+    }
+    
+    if field_mapping:
+        default_mapping.update(field_mapping)
+    
+    # Parse URL
+    parsed = parse_airtable_url(airtable_url)
+    if not parsed:
+        raise ValueError(f"Could not parse Airtable URL: {airtable_url}")
+    
+    base_id, table_id = parsed
+    
+    # Initialize API
+    api = Api(airtable_api_key)
+    table = api.table(base_id, table_id)
+    
+    # Fetch all records
+    records = table.all()
+    
+    attendees: list[Attendee] = []
+    missing_images: list[str] = []
+    
+    for record in records:
+        fields = record.get("fields", {})
+        
+        # Find field names (case-insensitive)
+        def find_field(possible_names: list[str]) -> str:
+            for name in possible_names:
+                for field_name in fields.keys():
+                    if field_name.lower() == name.lower():
+                        return str(fields[field_name] or "")
+            return ""
+        
+        first = find_field(default_mapping["first_name"]).strip()
+        last = find_field(default_mapping["last_name"]).strip()
+        organization = find_field(default_mapping["organization"]).strip()
+        title = find_field(default_mapping["title"]).strip()
+        
+        prefix = build_expected_prefix(first, last)
+        if not prefix:
+            continue
+        
+        image = find_headshot(headshot_dir, prefix)
+        
+        if image is None:
+            missing_images.append(prefix)
+            continue
+        
+        attendees.append(
+            Attendee(
+                first_name=first,
+                last_name=last,
+                organization=organization,
+                title=title,
+                image_path=image,
+            )
+        )
+    
+    if missing_images:
+        print(
+            "Skipping attendees without headshots in directory:",
+            ", ".join(sorted(set(missing_images))),
+            file=sys.stderr,
+        )
+    
     return attendees
 
 
