@@ -1191,12 +1191,12 @@ def main():
                 import time
                 time.sleep(0.2)
                 
-                    attendees_to_use = attendees[:limit_cards] if limit_cards > 0 else attendees
-                    
-                    temp_dir = Path(tempfile.mkdtemp())
-                    pdf_files = {}
-                    
-                    try:
+                attendees_to_use = attendees[:limit_cards] if limit_cards > 0 else attendees
+                
+                temp_dir = Path(tempfile.mkdtemp())
+                pdf_files = {}
+                
+                try:
                     total_tasks = sum([generate_combined, generate_fronts, generate_backs, generate_guides, generate_facebooks])
                     current_task = 0
                     
