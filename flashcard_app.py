@@ -1246,10 +1246,10 @@ def main():
                     
                     # Display download buttons
                     st.success(f"Generated {len(pdf_files)} PDF file(s)")
-                        
-                        for pdf_name, pdf_path in pdf_files.items():
-                            with open(pdf_path, "rb") as pdf_file:
-                                st.download_button(
+                    
+                    for pdf_name, pdf_path in pdf_files.items():
+                        with open(pdf_path, "rb") as pdf_file:
+                            st.download_button(
                                 label=f"Download {pdf_name}",
                                     data=pdf_file.read(),
                                     file_name=pdf_path.name,
