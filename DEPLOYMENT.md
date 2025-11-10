@@ -53,7 +53,7 @@ The app includes password protection. To set your password:
 4. Click "Save"
 5. The app will automatically redeploy with the new password
 
-**Note**: The default password is `changeme` - make sure to change it!
+**Note**: The default password is `flashcardsarefun` - you can change it in secrets if needed.
 
 ## Step 4: Get Your App URL
 

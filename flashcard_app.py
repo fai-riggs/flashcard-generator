@@ -52,10 +52,10 @@ if "authenticated" not in st.session_state:
 def get_password() -> str:
     """Get password from Streamlit secrets or use default."""
     try:
-        return st.secrets.get("app_password", "changeme")
+        return st.secrets.get("app_password", "flashcardsarefun")
     except (AttributeError, FileNotFoundError):
         # Fallback if secrets.toml doesn't exist
-        return "changeme"
+        return "flashcardsarefun"
 
 
 def check_password() -> bool:
