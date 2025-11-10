@@ -689,8 +689,8 @@ def main():
     with st.sidebar:
         st.markdown("""
         <div style="border-bottom: 2px solid #FF6B35; padding-bottom: 1rem; margin-bottom: 1rem;">
-            <h2 style="color: #FF6B35; text-shadow: 0 0 7px #FF6B35; font-family: 'Courier New', monospace; letter-spacing: 2px;">
-                [CONFIG]
+            <h2 style="color: #FF6B35; text-shadow: 0 0 10px #FF6B35, 0 0 20px rgba(255, 107, 53, 0.5); font-family: 'Courier New', monospace; letter-spacing: 2px;">
+                > [CONFIG]
             </h2>
         </div>
         """, unsafe_allow_html=True)
@@ -872,8 +872,8 @@ def main():
         # Headshot Directory Selection
         st.subheader("Headshot Images")
         st.markdown("""
-        <div style="background: rgba(255, 107, 53, 0.1); border-left: 4px solid #FF6B35; padding: 1rem; margin-bottom: 1rem; font-family: 'Courier New', monospace;">
-            <strong style="color: #FF6B35;">[INFO]</strong> Images are stored temporarily in session memory and will be cleared when you switch data sources or close the session.
+        <div style="background: rgba(255, 107, 53, 0.05); border-left: 3px solid #FF6B35; padding: 1rem; margin-bottom: 1rem; font-family: 'Courier New', monospace; border-radius: 0px;">
+            <strong style="color: #FF6B35; text-shadow: 0 0 8px #FF6B35;">> [INFO]</strong> <span style="color: #FF6B35;">Images are stored temporarily in session memory and will be cleared when you switch data sources or close the session.</span>
         </div>
         """, unsafe_allow_html=True)
         
@@ -897,16 +897,16 @@ def main():
             headshot_dir = st.session_state.headshot_dir
             
             st.markdown("""
-            <div style="background: rgba(255, 107, 53, 0.1); border-left: 4px solid #FF6B35; padding: 1rem; margin-bottom: 1rem; font-family: 'Courier New', monospace;">
-                <strong style="color: #FF6B35;">[NOTE]</strong> Images are stored in a temporary session directory and will be automatically cleared when you switch data sources.
+            <div style="background: rgba(255, 107, 53, 0.05); border-left: 3px solid #FF6B35; padding: 1rem; margin-bottom: 1rem; font-family: 'Courier New', monospace; border-radius: 0px;">
+                <strong style="color: #FF6B35; text-shadow: 0 0 8px #FF6B35;">> [NOTE]</strong> <span style="color: #FF6B35;">Images are stored in a temporary session directory and will be automatically cleared when you switch data sources.</span>
             </div>
             """, unsafe_allow_html=True)
             
             # Download images from URLs
             st.subheader("Download Images from URLs")
             st.markdown("""
-            <div style="background: rgba(255, 107, 53, 0.1); border-left: 4px solid #FF6B35; padding: 1rem; margin-bottom: 1rem; font-family: 'Courier New', monospace;">
-                <strong style="color: #FF6B35;">[INFO]</strong> Enter image URLs below. Images will be downloaded and saved with the filename format: FirstName_LastName.ext
+            <div style="background: rgba(255, 107, 53, 0.05); border-left: 3px solid #FF6B35; padding: 1rem; margin-bottom: 1rem; font-family: 'Courier New', monospace; border-radius: 0px;">
+                <strong style="color: #FF6B35; text-shadow: 0 0 8px #FF6B35;">> [INFO]</strong> <span style="color: #FF6B35;">Enter image URLs below. Images will be downloaded and saved with the filename format: FirstName_LastName.ext</span>
             </div>
             """, unsafe_allow_html=True)
             
