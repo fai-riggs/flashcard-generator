@@ -677,40 +677,40 @@ def main():
                     loading_placeholder = st.empty()
                     loading_placeholder.markdown(show_hacker_loader("TESTING CONNECTION...", 0.3), unsafe_allow_html=True)
                     try:
-                            from generate_flashcards import parse_airtable_url
-                            parsed = parse_airtable_url(airtable_url)
-                            if parsed:
-                                base_id, table_id = parsed
-                                loading_placeholder.markdown(show_hacker_loader("AUTHENTICATING...", 0.6), unsafe_allow_html=True)
-                                import time
-                                time.sleep(0.3)
+                        from generate_flashcards import parse_airtable_url
+                        parsed = parse_airtable_url(airtable_url)
+                        if parsed:
+                            base_id, table_id = parsed
+                            loading_placeholder.markdown(show_hacker_loader("AUTHENTICATING...", 0.6), unsafe_allow_html=True)
+                            import time
+                            time.sleep(0.3)
+                            
+                            loading_placeholder.markdown(show_hacker_loader("FETCHING DATA...", 0.9), unsafe_allow_html=True)
+                            
+                            # Try to fetch a sample record
+                            try:
+                                from pyairtable import Api
+                                api = Api(airtable_api_key)
+                                table = api.table(base_id, table_id)
+                                sample = table.first()
                                 
-                                loading_placeholder.markdown(show_hacker_loader("FETCHING DATA...", 0.9), unsafe_allow_html=True)
-                                
-                                # Try to fetch a sample record
-                                try:
-                                    from pyairtable import Api
-                                    api = Api(airtable_api_key)
-                                    table = api.table(base_id, table_id)
-                                    sample = table.first()
-                                    
-                                    loading_placeholder.empty()
-                                    if sample:
-                                        st.success(f"URL parsed successfully!")
-                                        st.info(f"**Base ID:** `{base_id[:8]}...`  **Table ID:** `{table_id[:8]}...`")
-                                        st.success(f"Connection successful! Found table with fields.")
-                                        if "fields" in sample:
-                                            st.info(f"**Available fields:** {', '.join(list(sample['fields'].keys())[:10])}")
-                                except Exception as e:
-                                    loading_placeholder.empty()
-                                    st.error(f"Could not connect to Airtable: {e}")
-                                    st.info("Make sure your API key has access to this base.")
-                            else:
                                 loading_placeholder.empty()
-                                st.error("Could not parse Airtable URL. Make sure it's a valid Airtable link.")
-                        except Exception as e:
+                                if sample:
+                                    st.success(f"URL parsed successfully!")
+                                    st.info(f"**Base ID:** `{base_id[:8]}...`  **Table ID:** `{table_id[:8]}...`")
+                                    st.success(f"Connection successful! Found table with fields.")
+                                    if "fields" in sample:
+                                        st.info(f"**Available fields:** {', '.join(list(sample['fields'].keys())[:10])}")
+                            except Exception as e:
+                                loading_placeholder.empty()
+                                st.error(f"Could not connect to Airtable: {e}")
+                                st.info("Make sure your API key has access to this base.")
+                        else:
                             loading_placeholder.empty()
-                            st.error(f"Error: {e}")
+                            st.error("Could not parse Airtable URL. Make sure it's a valid Airtable link.")
+                    except Exception as e:
+                        loading_placeholder.empty()
+                        st.error(f"Error: {e}")
             
             # Store in session state for later use
             if airtable_url and airtable_api_key:
@@ -969,72 +969,72 @@ def main():
                 temp_dir = Path(tempfile.mkdtemp())
                 pdf_files = {}
                 
-                    try:
-                        total_tasks = sum([generate_combined, generate_fronts, generate_backs, generate_guides, generate_facebooks])
-                        current_task = 0
-                        
-                        if generate_combined:
-                            current_task += 1
-                            loading_placeholder.markdown(show_hacker_loader(f"GENERATING COMBINED PDF... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
-                            combined_path = temp_dir / "flashcards_duplex.pdf"
-                            draw_combined(attendees_to_use, combined_path, duplex_mode=duplex_mode)
-                            pdf_files["Combined PDF"] = combined_path
-                            time.sleep(0.2)
-                        
-                        if generate_fronts:
-                            current_task += 1
-                            loading_placeholder.markdown(show_hacker_loader(f"GENERATING FRONTS... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
-                            fronts_path = temp_dir / "flashcards_fronts.pdf"
-                            draw_fronts(attendees_to_use, fronts_path)
-                            pdf_files["Fronts PDF"] = fronts_path
-                            time.sleep(0.2)
-                        
-                        if generate_backs:
-                            current_task += 1
-                            loading_placeholder.markdown(show_hacker_loader(f"GENERATING BACKS... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
-                            backs_path = temp_dir / "flashcards_backs.pdf"
-                            draw_backs(attendees_to_use, backs_path, duplex_mode=duplex_mode)
-                            pdf_files["Backs PDF"] = backs_path
-                            time.sleep(0.2)
-                        
-                        if generate_guides:
-                            current_task += 1
-                            loading_placeholder.markdown(show_hacker_loader(f"GENERATING CUT GUIDES... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
-                            guides_path = temp_dir / "flashcards_cut_guides.pdf"
-                            draw_guides(attendees_to_use, guides_path, duplex_mode=duplex_mode)
-                            pdf_files["Cut Guides PDF"] = guides_path
-                            time.sleep(0.2)
-                        
-                        if generate_facebooks:
-                            current_task += 1
-                            loading_placeholder.markdown(show_hacker_loader(f"GENERATING FACEBOOK PROOF... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
-                            facebooks_path = temp_dir / "facebook_proof.pdf"
-                            draw_facebooks(attendees_to_use, facebooks_path)
-                            pdf_files["Facebook Proof PDF"] = facebooks_path
-                            time.sleep(0.2)
-                        
-                        loading_placeholder.markdown(show_hacker_loader("COMPLETE", 1.0), unsafe_allow_html=True)
-                        time.sleep(0.5)
-                        loading_placeholder.empty()
-                        
-                        # Display download buttons
-                        st.success(f"Generated {len(pdf_files)} PDF file(s)")
-                        
-                        for pdf_name, pdf_path in pdf_files.items():
-                            with open(pdf_path, "rb") as pdf_file:
-                                st.download_button(
-                                    label=f"Download {pdf_name}",
-                                    data=pdf_file.read(),
-                                    file_name=pdf_path.name,
-                                    mime="application/pdf",
-                                    key=f"download_{pdf_name}",
-                                )
-                        
-                        st.balloons()
-                        
-                    except Exception as e:
-                        st.error(f"Error generating PDFs: {e}")
-                        st.exception(e)
+                try:
+                    total_tasks = sum([generate_combined, generate_fronts, generate_backs, generate_guides, generate_facebooks])
+                    current_task = 0
+                    
+                    if generate_combined:
+                        current_task += 1
+                        loading_placeholder.markdown(show_hacker_loader(f"GENERATING COMBINED PDF... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
+                        combined_path = temp_dir / "flashcards_duplex.pdf"
+                        draw_combined(attendees_to_use, combined_path, duplex_mode=duplex_mode)
+                        pdf_files["Combined PDF"] = combined_path
+                        time.sleep(0.2)
+                    
+                    if generate_fronts:
+                        current_task += 1
+                        loading_placeholder.markdown(show_hacker_loader(f"GENERATING FRONTS... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
+                        fronts_path = temp_dir / "flashcards_fronts.pdf"
+                        draw_fronts(attendees_to_use, fronts_path)
+                        pdf_files["Fronts PDF"] = fronts_path
+                        time.sleep(0.2)
+                    
+                    if generate_backs:
+                        current_task += 1
+                        loading_placeholder.markdown(show_hacker_loader(f"GENERATING BACKS... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
+                        backs_path = temp_dir / "flashcards_backs.pdf"
+                        draw_backs(attendees_to_use, backs_path, duplex_mode=duplex_mode)
+                        pdf_files["Backs PDF"] = backs_path
+                        time.sleep(0.2)
+                    
+                    if generate_guides:
+                        current_task += 1
+                        loading_placeholder.markdown(show_hacker_loader(f"GENERATING CUT GUIDES... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
+                        guides_path = temp_dir / "flashcards_cut_guides.pdf"
+                        draw_guides(attendees_to_use, guides_path, duplex_mode=duplex_mode)
+                        pdf_files["Cut Guides PDF"] = guides_path
+                        time.sleep(0.2)
+                    
+                    if generate_facebooks:
+                        current_task += 1
+                        loading_placeholder.markdown(show_hacker_loader(f"GENERATING FACEBOOK PROOF... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
+                        facebooks_path = temp_dir / "facebook_proof.pdf"
+                        draw_facebooks(attendees_to_use, facebooks_path)
+                        pdf_files["Facebook Proof PDF"] = facebooks_path
+                        time.sleep(0.2)
+                    
+                    loading_placeholder.markdown(show_hacker_loader("COMPLETE", 1.0), unsafe_allow_html=True)
+                    time.sleep(0.5)
+                    loading_placeholder.empty()
+                    
+                    # Display download buttons
+                    st.success(f"Generated {len(pdf_files)} PDF file(s)")
+                    
+                    for pdf_name, pdf_path in pdf_files.items():
+                        with open(pdf_path, "rb") as pdf_file:
+                            st.download_button(
+                                label=f"Download {pdf_name}",
+                                data=pdf_file.read(),
+                                file_name=pdf_path.name,
+                                mime="application/pdf",
+                                key=f"download_{pdf_name}",
+                            )
+                    
+                    st.balloons()
+                    
+                except Exception as e:
+                    st.error(f"Error generating PDFs: {e}")
+                    st.exception(e)
 
 
 if __name__ == "__main__":
