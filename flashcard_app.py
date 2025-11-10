@@ -747,20 +747,20 @@ def main():
         if data_source == "Upload CSV File":
             # CSV Upload
             st.subheader("CSV File")
-        uploaded_csv = st.file_uploader(
-            "Upload attendee CSV file",
-            type=["csv"],
-            help="CSV should have columns: First Name, Last Name, Organization, Job Title",
-        )
-        
-        if uploaded_csv is not None:
+            uploaded_csv = st.file_uploader(
+                "Upload attendee CSV file",
+                type=["csv"],
+                help="CSV should have columns: First Name, Last Name, Organization, Job Title",
+            )
+            
+            if uploaded_csv is not None:
                 # Save CSV to session temp location
                 session_dir = get_temp_session_dir()
                 csv_path = session_dir / uploaded_csv.name
-            with open(csv_path, "wb") as f:
-                f.write(uploaded_csv.getbuffer())
-            
-            st.session_state.csv_path = csv_path
+                with open(csv_path, "wb") as f:
+                    f.write(uploaded_csv.getbuffer())
+                
+                st.session_state.csv_path = csv_path
                 # Clear Airtable data when CSV is uploaded
                 st.session_state.airtable_url = None
                 st.session_state.airtable_api_key = None
