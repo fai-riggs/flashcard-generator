@@ -41,98 +41,132 @@ st.set_page_config(
     layout="wide",
 )
 
-# Custom CSS for hacker/cyberpunk theme
+# Custom CSS for eDEX-UI sci-fi terminal theme
 st.markdown("""
 <style>
-    /* Main background and text */
+    /* Pure black background - eDEX-UI style */
     .stApp {
-        background: linear-gradient(135deg, #0A0E27 0%, #1A1F3A 50%, #0A0E27 100%);
-        background-attachment: fixed;
+        background: #000000 !important;
+        background-color: #000000 !important;
     }
     
-    /* Headers with orange glow */
-    h1, h2, h3 {
+    /* Main content - pure black with orange borders */
+    .main .block-container {
+        background-color: #000000 !important;
+        border: 1px solid #FF6B35;
+        border-radius: 0px !important;
+        padding: 1.5rem;
+        margin-top: 1rem;
+        box-shadow: 0 0 15px rgba(255, 107, 53, 0.4);
+    }
+    
+    /* Headers - bright orange with strong glow */
+    h1, h2, h3, h4, h5, h6 {
         color: #FF6B35 !important;
-        text-shadow: 0 0 7px #FF6B35;
+        text-shadow: 0 0 10px #FF6B35, 0 0 20px rgba(255, 107, 53, 0.5) !important;
         font-family: 'Courier New', monospace !important;
         font-weight: bold !important;
-        letter-spacing: 2px;
-    }
-    
-    /* Main content areas */
-    .main .block-container {
-        background-color: rgba(26, 31, 58, 0.8);
-        border: 1px solid #FF6B35;
-        border-radius: 8px;
-        box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
-        padding: 2rem;
-        margin-top: 2rem;
-    }
-    
-    /* Sidebar styling */
-    [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #1A1F3A 0%, #0A0E27 100%);
-        border-right: 2px solid #FF6B35;
-        box-shadow: 0 0 15px rgba(255, 107, 53, 0.2);
-    }
-    
-    /* Buttons - orange with glow */
-    .stButton > button {
-        background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
-        color: #0A0E27 !important;
-        border: 2px solid #FF6B35;
-        border-radius: 4px;
-        font-weight: bold;
-        font-family: 'Courier New', monospace;
-        text-transform: uppercase;
         letter-spacing: 1px;
-        box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
-        transition: all 0.3s ease;
+    }
+    
+    /* All text - orange */
+    p, span, div, label, li {
+        color: #FF6B35 !important;
+        font-family: 'Courier New', monospace !important;
+    }
+    
+    /* Body text */
+    body {
+        background: #000000 !important;
+        color: #FF6B35 !important;
+        font-family: 'Courier New', monospace !important;
+    }
+    
+    /* Sidebar - pure black with orange border */
+    [data-testid="stSidebar"] {
+        background: #000000 !important;
+        border-right: 2px solid #FF6B35;
+        box-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+    }
+    
+    [data-testid="stSidebar"] * {
+        color: #FF6B35 !important;
+        font-family: 'Courier New', monospace !important;
+    }
+    
+    /* Buttons - terminal style, sharp corners */
+    .stButton > button {
+        background: #000000 !important;
+        color: #FF6B35 !important;
+        border: 2px solid #FF6B35 !important;
+        border-radius: 0px !important;
+        font-weight: bold;
+        font-family: 'Courier New', monospace !important;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        box-shadow: 0 0 10px rgba(255, 107, 53, 0.6), inset 0 0 10px rgba(255, 107, 53, 0.1);
+        transition: all 0.2s ease;
+        padding: 0.75rem 1.5rem;
     }
     
     .stButton > button:hover {
-        background: linear-gradient(135deg, #FF8C42 0%, #FF6B35 100%);
-        box-shadow: 0 0 20px rgba(255, 107, 53, 0.8);
-        transform: translateY(-2px);
+        background: rgba(255, 107, 53, 0.1) !important;
+        box-shadow: 0 0 20px rgba(255, 107, 53, 0.9), inset 0 0 15px rgba(255, 107, 53, 0.2);
+        text-shadow: 0 0 10px #FF6B35;
     }
     
-    /* Primary button */
+    /* Primary button - brighter glow */
     .stButton > button[kind="primary"] {
-        background: linear-gradient(135deg, #FF6B35 0%, #FF4500 100%);
-        box-shadow: 0 0 15px rgba(255, 107, 53, 0.7);
+        background: rgba(255, 107, 53, 0.15) !important;
+        box-shadow: 0 0 15px rgba(255, 107, 53, 0.8), inset 0 0 15px rgba(255, 107, 53, 0.2);
+        border: 2px solid #FF6B35 !important;
     }
     
-    /* Text inputs */
+    /* Text inputs - terminal style */
     .stTextInput > div > div > input {
-        background-color: #0A0E27 !important;
-        color: #E0E0E0 !important;
+        background-color: #000000 !important;
+        color: #FF6B35 !important;
         border: 1px solid #FF6B35 !important;
-        border-radius: 4px;
-        font-family: 'Courier New', monospace;
+        border-radius: 0px !important;
+        font-family: 'Courier New', monospace !important;
+        box-shadow: 0 0 5px rgba(255, 107, 53, 0.3);
     }
     
     .stTextInput > div > div > input:focus {
         border: 2px solid #FF6B35 !important;
-        box-shadow: 0 0 10px rgba(255, 107, 53, 0.5) !important;
+        box-shadow: 0 0 15px rgba(255, 107, 53, 0.7) !important;
+        outline: none !important;
     }
     
-    /* File uploader */
+    .stTextInput label {
+        color: #FF6B35 !important;
+        font-family: 'Courier New', monospace !important;
+    }
+    
+    /* File uploader - terminal style */
     .stFileUploader {
-        background-color: rgba(10, 14, 39, 0.5);
-        border: 1px dashed #FF6B35;
-        border-radius: 4px;
+        background-color: #000000 !important;
+        border: 1px dashed #FF6B35 !important;
+        border-radius: 0px !important;
         padding: 1rem;
     }
     
-    /* Selectbox and radio */
+    /* Selectbox - terminal style */
     .stSelectbox > div > div > select {
-        background-color: #0A0E27 !important;
-        color: #E0E0E0 !important;
+        background-color: #000000 !important;
+        color: #FF6B35 !important;
         border: 1px solid #FF6B35 !important;
-        font-family: 'Courier New', monospace;
+        border-radius: 0px !important;
+        font-family: 'Courier New', monospace !important;
+        box-shadow: 0 0 5px rgba(255, 107, 53, 0.3);
     }
     
-    /* Enhanced Radio Buttons */
+    .stSelectbox label {
+        color: #FF6B35 !important;
+        font-family: 'Courier New', monospace !important;
+    }
+    
+    /* Radio Buttons - terminal style */
     .stRadio > div {
         display: flex !important;
         flex-direction: row !important;
@@ -141,164 +175,191 @@ st.markdown("""
     }
     
     .stRadio > div > label {
-        background: linear-gradient(135deg, rgba(26, 31, 58, 0.9) 0%, rgba(10, 14, 39, 0.9) 100%) !important;
-        color: #E0E0E0 !important;
+        background: #000000 !important;
+        color: #FF6B35 !important;
         border: 2px solid #FF6B35 !important;
-        border-radius: 8px !important;
+        border-radius: 0px !important;
         font-family: 'Courier New', monospace !important;
-        font-size: 1.1rem !important;
+        font-size: 1rem !important;
         font-weight: bold !important;
-        padding: 1.2rem 2rem !important;
-        min-width: 250px !important;
+        padding: 1rem 1.5rem !important;
+        min-width: 200px !important;
         cursor: pointer !important;
-        transition: all 0.3s ease !important;
-        box-shadow: 0 0 10px rgba(255, 107, 53, 0.2) !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 0 8px rgba(255, 107, 53, 0.4) !important;
         letter-spacing: 1px !important;
         text-transform: uppercase !important;
     }
     
     .stRadio > div > label:hover {
-        background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(26, 31, 58, 0.9) 100%) !important;
-        border-color: #FF8C42 !important;
-        box-shadow: 0 0 20px rgba(255, 107, 53, 0.4) !important;
-        transform: translateY(-2px) !important;
-    }
-    
-    .stRadio > div > label[data-baseweb="radio"] {
-        margin-right: 1rem !important;
+        background: rgba(255, 107, 53, 0.1) !important;
+        box-shadow: 0 0 15px rgba(255, 107, 53, 0.7) !important;
+        text-shadow: 0 0 8px #FF6B35;
     }
     
     /* Selected radio button */
     .stRadio > div > label:has(input[checked]) {
-        background: linear-gradient(135deg, rgba(255, 107, 53, 0.2) 0%, rgba(26, 31, 58, 0.9) 100%) !important;
+        background: rgba(255, 107, 53, 0.2) !important;
         border-color: #FF6B35 !important;
-        box-shadow: 0 0 25px rgba(255, 107, 53, 0.6) !important;
+        box-shadow: 0 0 20px rgba(255, 107, 53, 0.8) !important;
         color: #FF6B35 !important;
+        text-shadow: 0 0 10px #FF6B35;
     }
     
     /* Radio button circle */
     .stRadio input[type="radio"] {
-        width: 20px !important;
-        height: 20px !important;
-        margin-right: 1rem !important;
+        width: 18px !important;
+        height: 18px !important;
+        margin-right: 0.75rem !important;
         accent-color: #FF6B35 !important;
     }
     
-    /* Checkbox */
+    /* Checkbox - terminal style */
     .stCheckbox > label {
-        color: #E0E0E0 !important;
-        font-family: 'Courier New', monospace;
+        color: #FF6B35 !important;
+        font-family: 'Courier New', monospace !important;
     }
     
-    /* Tabs */
+    .stCheckbox input[type="checkbox"] {
+        accent-color: #FF6B35;
+    }
+    
+    /* Tabs - terminal style */
     .stTabs [data-baseweb="tab-list"] {
-        background-color: #0A0E27;
+        background-color: #000000 !important;
         border-bottom: 2px solid #FF6B35;
     }
     
     .stTabs [data-baseweb="tab"] {
-        color: #E0E0E0 !important;
-        font-family: 'Courier New', monospace;
+        color: #FF6B35 !important;
+        font-family: 'Courier New', monospace !important;
         font-weight: bold;
-        letter-spacing: 1px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
     }
     
     .stTabs [aria-selected="true"] {
         color: #FF6B35 !important;
         border-bottom: 3px solid #FF6B35;
-        text-shadow: 0 0 7px #FF6B35;
+        text-shadow: 0 0 10px #FF6B35;
+        background: rgba(255, 107, 53, 0.1) !important;
     }
     
-    /* Success/Info/Error messages */
+    /* Success/Info/Error messages - terminal style */
     .stSuccess {
-        background-color: rgba(255, 107, 53, 0.1) !important;
-        border-left: 4px solid #FF6B35 !important;
+        background-color: rgba(255, 107, 53, 0.05) !important;
+        border-left: 3px solid #FF6B35 !important;
+        border-radius: 0px !important;
         color: #FF6B35 !important;
-        font-family: 'Courier New', monospace;
+        font-family: 'Courier New', monospace !important;
+        box-shadow: 0 0 8px rgba(255, 107, 53, 0.3);
     }
     
     .stInfo {
-        background-color: rgba(255, 107, 53, 0.1) !important;
-        border-left: 4px solid #FF6B35 !important;
-        color: #E0E0E0 !important;
-        font-family: 'Courier New', monospace;
+        background-color: rgba(255, 107, 53, 0.05) !important;
+        border-left: 3px solid #FF6B35 !important;
+        border-radius: 0px !important;
+        color: #FF6B35 !important;
+        font-family: 'Courier New', monospace !important;
+        box-shadow: 0 0 8px rgba(255, 107, 53, 0.3);
     }
     
     .stError {
-        background-color: rgba(255, 0, 0, 0.1) !important;
-        border-left: 4px solid #FF0000 !important;
+        background-color: rgba(255, 0, 0, 0.05) !important;
+        border-left: 3px solid #FF0000 !important;
+        border-radius: 0px !important;
         color: #FF6B6B !important;
-        font-family: 'Courier New', monospace;
+        font-family: 'Courier New', monospace !important;
+        box-shadow: 0 0 8px rgba(255, 0, 0, 0.3);
     }
     
     .stWarning {
-        background-color: rgba(255, 165, 0, 0.1) !important;
-        border-left: 4px solid #FFA500 !important;
+        background-color: rgba(255, 165, 0, 0.05) !important;
+        border-left: 3px solid #FFA500 !important;
+        border-radius: 0px !important;
         color: #FFA500 !important;
-        font-family: 'Courier New', monospace;
+        font-family: 'Courier New', monospace !important;
+        box-shadow: 0 0 8px rgba(255, 165, 0, 0.3);
     }
     
-    /* Dataframes */
+    /* Dataframes - terminal style */
     .stDataFrame {
-        background-color: #0A0E27 !important;
+        background-color: #000000 !important;
         border: 1px solid #FF6B35 !important;
+        border-radius: 0px !important;
     }
     
-    /* Metrics */
+    /* Metrics - terminal style */
     [data-testid="stMetricValue"] {
         color: #FF6B35 !important;
-        font-family: 'Courier New', monospace;
+        font-family: 'Courier New', monospace !important;
         font-weight: bold;
-        text-shadow: 0 0 7px #FF6B35;
+        text-shadow: 0 0 10px #FF6B35;
     }
     
     [data-testid="stMetricLabel"] {
-        color: #E0E0E0 !important;
-        font-family: 'Courier New', monospace;
+        color: #FF6B35 !important;
+        font-family: 'Courier New', monospace !important;
     }
     
-    /* Expander */
+    [data-testid="stMetricContainer"] {
+        background-color: #000000 !important;
+        border: 1px solid #FF6B35 !important;
+        border-radius: 0px !important;
+        padding: 1rem;
+        box-shadow: 0 0 8px rgba(255, 107, 53, 0.3);
+    }
+    
+    /* Expander - terminal style */
     .streamlit-expanderHeader {
-        background-color: rgba(26, 31, 58, 0.8) !important;
+        background-color: #000000 !important;
         color: #FF6B35 !important;
         border: 1px solid #FF6B35 !important;
-        font-family: 'Courier New', monospace;
+        border-radius: 0px !important;
+        font-family: 'Courier New', monospace !important;
         font-weight: bold;
     }
     
     /* Password input */
     input[type="password"] {
-        font-family: 'Courier New', monospace;
-        letter-spacing: 2px;
+        font-family: 'Courier New', monospace !important;
+        letter-spacing: 3px;
+        color: #FF6B35 !important;
     }
     
-    /* Scrollbar styling */
+    /* Textarea - terminal style */
+    .stTextArea > div > div > textarea {
+        background-color: #000000 !important;
+        color: #FF6B35 !important;
+        border: 1px solid #FF6B35 !important;
+        border-radius: 0px !important;
+        font-family: 'Courier New', monospace !important;
+    }
+    
+    .stTextArea label {
+        color: #FF6B35 !important;
+        font-family: 'Courier New', monospace !important;
+    }
+    
+    /* Scrollbar - terminal style */
     ::-webkit-scrollbar {
-        width: 10px;
+        width: 12px;
     }
     
     ::-webkit-scrollbar-track {
-        background: #0A0E27;
+        background: #000000;
+        border: 1px solid #FF6B35;
     }
     
     ::-webkit-scrollbar-thumb {
         background: #FF6B35;
-        border-radius: 5px;
+        border-radius: 0px;
+        box-shadow: 0 0 5px rgba(255, 107, 53, 0.5);
     }
     
     ::-webkit-scrollbar-thumb:hover {
         background: #FF8C42;
-        box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
-    }
-    
-    /* Animated border effect */
-    @keyframes borderGlow {
-        0%, 100% { box-shadow: 0 0 10px rgba(255, 107, 53, 0.3); }
-        50% { box-shadow: 0 0 20px rgba(255, 107, 53, 0.6); }
-    }
-    
-    .main .block-container {
-        animation: borderGlow 3s ease-in-out infinite;
+        box-shadow: 0 0 10px rgba(255, 107, 53, 0.8);
     }
     
     /* Hacker Loading Animation */
@@ -321,12 +382,12 @@ st.markdown("""
     }
     
     .hacker-loader {
-        background: rgba(10, 14, 39, 0.95);
+        background: #000000;
         border: 2px solid #FF6B35;
-        border-radius: 8px;
+        border-radius: 0px;
         padding: 2rem;
         margin: 2rem 0;
-        box-shadow: 0 0 30px rgba(255, 107, 53, 0.4);
+        box-shadow: 0 0 30px rgba(255, 107, 53, 0.6);
         position: relative;
         overflow: hidden;
     }
@@ -354,9 +415,9 @@ st.markdown("""
     .hacker-progress {
         width: 100%;
         height: 30px;
-        background: #0A0E27;
+        background: #000000;
         border: 2px solid #FF6B35;
-        border-radius: 4px;
+        border-radius: 0px;
         margin-top: 1rem;
         overflow: hidden;
         position: relative;
@@ -378,10 +439,38 @@ st.markdown("""
     
     .hacker-status {
         font-family: 'Courier New', monospace;
-        color: #E0E0E0;
+        color: #FF6B35;
         font-size: 0.9rem;
         margin-top: 0.5rem;
         letter-spacing: 1px;
+        text-shadow: 0 0 5px #FF6B35;
+    }
+    
+    /* Download buttons */
+    .stDownloadButton > button {
+        background: #000000 !important;
+        color: #FF6B35 !important;
+        border: 2px solid #FF6B35 !important;
+        border-radius: 0px !important;
+        font-family: 'Courier New', monospace !important;
+        box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+    }
+    
+    .stDownloadButton > button:hover {
+        background: rgba(255, 107, 53, 0.1) !important;
+        box-shadow: 0 0 15px rgba(255, 107, 53, 0.8);
+    }
+    
+    /* Captions */
+    .stCaption {
+        color: #FF6B35 !important;
+        font-family: 'Courier New', monospace !important;
+    }
+    
+    /* Images */
+    img {
+        border: 1px solid #FF6B35;
+        box-shadow: 0 0 10px rgba(255, 107, 53, 0.4);
     }
 </style>
 """, unsafe_allow_html=True)
@@ -417,21 +506,29 @@ def check_password() -> bool:
     if st.session_state.authenticated:
         return True
     
-    # Simple black terminal with orange text
+    # eDEX-UI style terminal login screen
     st.markdown("""
     <style>
-    .terminal-screen {
+    .edex-terminal {
         background-color: #000000;
         color: #FF6B35;
         font-family: 'Courier New', monospace;
-        padding: 2rem;
-        min-height: 70vh;
-        font-size: 14px;
-        line-height: 1.6;
+        padding: 3rem;
+        min-height: 80vh;
+        font-size: 16px;
+        line-height: 1.8;
+        border: 2px solid #FF6B35;
+        box-shadow: 0 0 30px rgba(255, 107, 53, 0.6);
+    }
+    .edex-prompt {
+        color: #FF6B35;
+        text-shadow: 0 0 10px #FF6B35, 0 0 20px rgba(255, 107, 53, 0.5);
+        font-weight: bold;
+        letter-spacing: 1px;
     }
     </style>
-    <div class="terminal-screen">
-    <pre>> ACCESS DENIED
+    <div class="edex-terminal">
+    <pre class="edex-prompt">> ACCESS DENIED
 > AUTHENTICATION REQUIRED
 
 </pre>
@@ -450,11 +547,11 @@ def check_password() -> bool:
             st.rerun()
         else:
             st.markdown("""
-            <pre style="color: #FF6B35; font-family: 'Courier New', monospace;">> ACCESS DENIED - INVALID CREDENTIALS</pre>
+            <pre class="edex-prompt" style="margin-top: 1rem;">> ACCESS DENIED - INVALID CREDENTIALS</pre>
             """, unsafe_allow_html=True)
     
     st.markdown("""
-    <pre style="color: #FF6B35; font-family: 'Courier New', monospace; margin-top: 2rem;">> [SYSTEM] Contact administrator for access</pre>
+    <pre class="edex-prompt" style="margin-top: 2rem; opacity: 0.7;">> [SYSTEM] Contact administrator for access</pre>
     </div>
     """, unsafe_allow_html=True)
     
@@ -464,7 +561,7 @@ def check_password() -> bool:
 def download_image_from_url(url: str, directory: Path, filename: str) -> Optional[Path]:
     """Download an image from a URL and save it to the specified directory."""
     try:
-        directory.mkdir(parents=True, exist_ok=True)
+    directory.mkdir(parents=True, exist_ok=True)
         
         # Download the image
         headers = {
@@ -495,10 +592,10 @@ def download_image_from_url(url: str, directory: Path, filename: str) -> Optiona
         if not filename.endswith(f'.{ext}'):
             filename = f"{filename.rsplit('.', 1)[0] if '.' in filename else filename}.{ext}"
         
-        file_path = directory / filename
+    file_path = directory / filename
         
         # Save the image
-        with open(file_path, "wb") as f:
+    with open(file_path, "wb") as f:
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
         
@@ -510,7 +607,7 @@ def download_image_from_url(url: str, directory: Path, filename: str) -> Optiona
             file_path.unlink()
             return None
         
-        return file_path
+    return file_path
     except Exception as e:
         st.error(f"Error downloading image from {url}: {e}")
         return None
@@ -572,19 +669,19 @@ def main():
     if not check_password():
         st.stop()
     
-    # Hacker-style header
+    # eDEX-UI style header
     st.markdown("""
-    <div style="text-align: center; padding: 2rem 0; border-bottom: 2px solid #FF6B35; margin-bottom: 2rem;">
-        <h1 style="margin: 0; font-size: 3rem; text-shadow: 0 0 7px #FF6B35;">FLASHCARD GENERATOR</h1>
-        <p style="color: #FF6B35; font-family: 'Courier New', monospace; letter-spacing: 3px; margin-top: 1rem;">
-            [SYSTEM] INITIALIZING... [READY]
+    <div style="text-align: center; padding: 2rem 0; border-bottom: 2px solid #FF6B35; margin-bottom: 2rem; background: #000000;">
+        <h1 style="margin: 0; font-size: 3rem; text-shadow: 0 0 15px #FF6B35, 0 0 30px rgba(255, 107, 53, 0.5); letter-spacing: 4px;">FLASHCARD GENERATOR</h1>
+        <p style="color: #FF6B35; font-family: 'Courier New', monospace; letter-spacing: 3px; margin-top: 1rem; text-shadow: 0 0 8px #FF6B35;">
+            > [SYSTEM] INITIALIZING... [READY]
         </p>
     </div>
     """, unsafe_allow_html=True)
     
     st.markdown("""
-    <div style="background: rgba(255, 107, 53, 0.1); border-left: 4px solid #FF6B35; padding: 1rem; margin-bottom: 2rem; font-family: 'Courier New', monospace;">
-        <strong style="color: #FF6B35;">[INFO]</strong> Create printable flashcards and facebooks for events with attendee names and headshots.
+    <div style="background: rgba(255, 107, 53, 0.05); border-left: 3px solid #FF6B35; padding: 1rem; margin-bottom: 2rem; font-family: 'Courier New', monospace; border-radius: 0px;">
+        <strong style="color: #FF6B35; text-shadow: 0 0 8px #FF6B35;">> [INFO]</strong> <span style="color: #FF6B35;">Create printable flashcards and facebooks for events with attendee names and headshots.</span>
     </div>
     """, unsafe_allow_html=True)
 
@@ -648,41 +745,41 @@ def main():
         st.markdown("---")
         
         if data_source == "Upload CSV File":
-            # CSV Upload
-            st.subheader("CSV File")
-            uploaded_csv = st.file_uploader(
-                "Upload attendee CSV file",
-                type=["csv"],
-                help="CSV should have columns: First Name, Last Name, Organization, Job Title",
-            )
-            
-            if uploaded_csv is not None:
+        # CSV Upload
+        st.subheader("CSV File")
+        uploaded_csv = st.file_uploader(
+            "Upload attendee CSV file",
+            type=["csv"],
+            help="CSV should have columns: First Name, Last Name, Organization, Job Title",
+        )
+        
+        if uploaded_csv is not None:
                 # Save CSV to session temp location
                 session_dir = get_temp_session_dir()
                 csv_path = session_dir / uploaded_csv.name
-                with open(csv_path, "wb") as f:
-                    f.write(uploaded_csv.getbuffer())
-                
-                st.session_state.csv_path = csv_path
+            with open(csv_path, "wb") as f:
+                f.write(uploaded_csv.getbuffer())
+            
+            st.session_state.csv_path = csv_path
                 # Clear Airtable data when CSV is uploaded
                 st.session_state.airtable_url = None
                 st.session_state.airtable_api_key = None
-                
-                # Display preview
-                try:
-                    df = pd.read_csv(csv_path, encoding="utf-8-sig")
+            
+            # Display preview
+            try:
+                df = pd.read_csv(csv_path, encoding="utf-8-sig")
                     st.success(f"CSV loaded: {len(df)} rows")
-                    st.dataframe(df.head(10), use_container_width=True)
-                    
-                    # Check required columns
-                    required_cols = ["First Name", "Last Name"]
-                    missing_cols = [col for col in required_cols if col not in df.columns]
-                    if missing_cols:
+                st.dataframe(df.head(10), use_container_width=True)
+                
+                # Check required columns
+                required_cols = ["First Name", "Last Name"]
+                missing_cols = [col for col in required_cols if col not in df.columns]
+                if missing_cols:
                         st.error(f"Missing required columns: {', '.join(missing_cols)}")
-                    else:
+                else:
                         st.info("Required columns found")
-                except Exception as e:
-                    st.error(f"Error reading CSV: {e}")
+            except Exception as e:
+                st.error(f"Error reading CSV: {e}")
         
         else:  # Airtable import
             st.subheader("Import from Airtable")
@@ -976,10 +1073,10 @@ def main():
                         time.sleep(0.2)
                         
                         loading_placeholder.markdown(show_hacker_loader("LOADING ATTENDEES...", 0.4), unsafe_allow_html=True)
-                        attendees = load_attendees(
-                            st.session_state.csv_path,
-                            st.session_state.headshot_dir,
-                        )
+                    attendees = load_attendees(
+                        st.session_state.csv_path,
+                        st.session_state.headshot_dir,
+                    )
                         
                         loading_placeholder.markdown(show_hacker_loader("PROCESSING IMAGES...", 0.7), unsafe_allow_html=True)
                         time.sleep(0.3)
@@ -1094,45 +1191,45 @@ def main():
                 import time
                 time.sleep(0.2)
                 
-                attendees_to_use = attendees[:limit_cards] if limit_cards > 0 else attendees
-                
-                temp_dir = Path(tempfile.mkdtemp())
-                pdf_files = {}
-                
-                try:
+                    attendees_to_use = attendees[:limit_cards] if limit_cards > 0 else attendees
+                    
+                    temp_dir = Path(tempfile.mkdtemp())
+                    pdf_files = {}
+                    
+                    try:
                     total_tasks = sum([generate_combined, generate_fronts, generate_backs, generate_guides, generate_facebooks])
                     current_task = 0
                     
-                    if generate_combined:
+                        if generate_combined:
                         current_task += 1
                         loading_placeholder.markdown(show_hacker_loader(f"GENERATING COMBINED PDF... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
-                        combined_path = temp_dir / "flashcards_duplex.pdf"
-                        draw_combined(attendees_to_use, combined_path, duplex_mode=duplex_mode)
-                        pdf_files["Combined PDF"] = combined_path
+                            combined_path = temp_dir / "flashcards_duplex.pdf"
+                            draw_combined(attendees_to_use, combined_path, duplex_mode=duplex_mode)
+                            pdf_files["Combined PDF"] = combined_path
                         time.sleep(0.2)
-                    
-                    if generate_fronts:
+                        
+                        if generate_fronts:
                         current_task += 1
                         loading_placeholder.markdown(show_hacker_loader(f"GENERATING FRONTS... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
-                        fronts_path = temp_dir / "flashcards_fronts.pdf"
-                        draw_fronts(attendees_to_use, fronts_path)
-                        pdf_files["Fronts PDF"] = fronts_path
+                            fronts_path = temp_dir / "flashcards_fronts.pdf"
+                            draw_fronts(attendees_to_use, fronts_path)
+                            pdf_files["Fronts PDF"] = fronts_path
                         time.sleep(0.2)
-                    
-                    if generate_backs:
+                        
+                        if generate_backs:
                         current_task += 1
                         loading_placeholder.markdown(show_hacker_loader(f"GENERATING BACKS... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
-                        backs_path = temp_dir / "flashcards_backs.pdf"
-                        draw_backs(attendees_to_use, backs_path, duplex_mode=duplex_mode)
-                        pdf_files["Backs PDF"] = backs_path
+                            backs_path = temp_dir / "flashcards_backs.pdf"
+                            draw_backs(attendees_to_use, backs_path, duplex_mode=duplex_mode)
+                            pdf_files["Backs PDF"] = backs_path
                         time.sleep(0.2)
-                    
-                    if generate_guides:
+                        
+                        if generate_guides:
                         current_task += 1
                         loading_placeholder.markdown(show_hacker_loader(f"GENERATING CUT GUIDES... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
-                        guides_path = temp_dir / "flashcards_cut_guides.pdf"
-                        draw_guides(attendees_to_use, guides_path, duplex_mode=duplex_mode)
-                        pdf_files["Cut Guides PDF"] = guides_path
+                            guides_path = temp_dir / "flashcards_cut_guides.pdf"
+                            draw_guides(attendees_to_use, guides_path, duplex_mode=duplex_mode)
+                            pdf_files["Cut Guides PDF"] = guides_path
                         time.sleep(0.2)
                     
                     if generate_facebooks:
@@ -1146,25 +1243,25 @@ def main():
                     loading_placeholder.markdown(show_hacker_loader("COMPLETE", 1.0), unsafe_allow_html=True)
                     time.sleep(0.5)
                     loading_placeholder.empty()
-                    
-                    # Display download buttons
+                        
+                        # Display download buttons
                     st.success(f"Generated {len(pdf_files)} PDF file(s)")
-                    
-                    for pdf_name, pdf_path in pdf_files.items():
-                        with open(pdf_path, "rb") as pdf_file:
-                            st.download_button(
+                        
+                        for pdf_name, pdf_path in pdf_files.items():
+                            with open(pdf_path, "rb") as pdf_file:
+                                st.download_button(
                                 label=f"Download {pdf_name}",
-                                data=pdf_file.read(),
-                                file_name=pdf_path.name,
-                                mime="application/pdf",
-                                key=f"download_{pdf_name}",
-                            )
-                    
-                    st.balloons()
-                    
-                except Exception as e:
+                                    data=pdf_file.read(),
+                                    file_name=pdf_path.name,
+                                    mime="application/pdf",
+                                    key=f"download_{pdf_name}",
+                                )
+                        
+                        st.balloons()
+                        
+                    except Exception as e:
                     st.error(f"Error generating PDFs: {e}")
-                    st.exception(e)
+                        st.exception(e)
 
 
 if __name__ == "__main__":
