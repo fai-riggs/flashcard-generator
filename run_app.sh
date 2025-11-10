@@ -1,7 +1,7 @@
 #!/bin/bash
-# Quick launcher script for the Flashcard Generator app
+# Quick launcher script for the FAI Document Generator app
 
-echo "🚀 Starting Flashcard Generator..."
+echo "🚀 Starting FAI Document Generator..."
 echo ""
 
 # Check if streamlit is installed
@@ -11,7 +11,8 @@ if ! command -v streamlit &> /dev/null; then
 fi
 
 # Run the app
-streamlit run flashcard_app.py
+streamlit run fai_document_generator.py
+
 
 
 

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Flashcard Generator Web App
+"""FAI Document Generator Web App
 
-A user-friendly web interface for creating printable flashcards from attendee data.
-Supports CSV upload, image management, and PDF generation for future events.
+A one-stop shop for FAI staff to easily generate documents.
+Supports flashcards, table tents, custom templates, and more from CSV data.
+Features CSV upload, image management, and automated PDF generation.
 """
 
 import io
@@ -17,7 +18,7 @@ from PIL import Image
 import requests
 from urllib.parse import urlparse
 
-# Import the flashcard generation functions
+# Import the flashcard generation functions (legacy module name kept for compatibility)
 from generate_flashcards import (
     load_attendees,
     load_attendees_from_airtable,
@@ -34,9 +35,18 @@ from generate_flashcards import (
     build_expected_prefix,
 )
 
+# Import document generation functions
+from generate_documents import (
+    load_records_from_csv,
+    generate_table_tents,
+    generate_from_template,
+    DocumentType,
+    DocumentRecord,
+)
+
 # Page configuration
 st.set_page_config(
-    page_title="Flashcard & Facebook Generator",
+    page_title="FAI Document Generator",
     page_icon="",
     layout="wide",
 )
@@ -700,7 +710,7 @@ def download_image_from_url(url: str, directory: Path, filename: str) -> Optiona
 def get_temp_session_dir() -> Path:
     """Get or create a temporary directory for this session."""
     if st.session_state.temp_base_dir is None:
-        st.session_state.temp_base_dir = Path(tempfile.mkdtemp(prefix="flashcard_session_"))
+        st.session_state.temp_base_dir = Path(tempfile.mkdtemp(prefix="fai_doc_gen_session_"))
     return st.session_state.temp_base_dir
 
 
@@ -756,7 +766,7 @@ def main():
     # eDEX-UI style header
     st.markdown("""
     <div style="text-align: center; padding: 2rem 0; border-bottom: 2px solid #FF6B35; margin-bottom: 2rem; background: #000000;">
-        <h1 style="margin: 0; font-size: 3rem; text-shadow: none; letter-spacing: 4px;">FLASHCARD GENERATOR</h1>
+        <h1 style="margin: 0; font-size: 3rem; text-shadow: none; letter-spacing: 4px;">FAI DOCUMENT GENERATOR</h1>
         <p style="color: #FF6B35; font-family: 'Courier New', monospace; letter-spacing: 3px; margin-top: 1rem; text-shadow: none;">
             > [SYSTEM] INITIALIZING... [READY]
         </p>
@@ -765,7 +775,7 @@ def main():
     
     st.markdown("""
         <div style="background: rgba(255, 107, 53, 0.05); border-left: 3px solid #FF6B35; padding: 1rem; margin-bottom: 2rem; font-family: 'Courier New', monospace; border-radius: 0px;">
-        <strong style="color: #FF6B35; text-shadow: none;">> [INFO]</strong> <span style="color: #FF6B35;">Create printable flashcards and facebooks for events with attendee names and headshots.</span>
+        <strong style="color: #FF6B35; text-shadow: none;">> [INFO]</strong> <span style="color: #FF6B35;">Generate professional documents for events: flashcards, table tents, custom templates, and more. Upload CSV data and create print-ready PDFs automatically.</span>
     </div>
     """, unsafe_allow_html=True)
 
@@ -798,7 +808,7 @@ def main():
         1. **Upload CSV**: CSV with columns: First Name, Last Name, Organization, Job Title
         2. **Upload Images**: Add headshot images (named as FirstName_LastName.ext)
         3. **Review Matches**: Check that names match images correctly
-        4. **Generate PDFs**: Create printable flashcards or facebooks
+        4. **Generate PDFs**: Create printable flashcards, facebooks, table tents, and custom documents
         """)
         
         st.markdown("---")
@@ -808,7 +818,7 @@ def main():
             st.rerun()
 
     # Main content area
-    tab1, tab2, tab3, tab4 = st.tabs(["Upload Data", "Manage Images", "Review Attendees", "Generate PDFs"])
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(["Upload Data", "Manage Images", "Review Attendees", "Generate PDFs", "Document Generator"])
 
     with tab1:
         st.header("Upload Attendee Data")
@@ -1345,6 +1355,235 @@ def main():
                     
                 except Exception as e:
                     st.error(f"Error generating PDFs: {e}")
+                    st.exception(e)
+
+    with tab5:
+        st.header("Document Generator")
+        st.markdown("""
+        <div style="background: rgba(255, 107, 53, 0.05); border-left: 3px solid #FF6B35; padding: 1rem; margin-bottom: 2rem; font-family: 'Courier New', monospace; border-radius: 0px;">
+        <strong style="color: #FF6B35; text-shadow: none;">> [INFO]</strong> <span style="color: #FF6B35;">Generate various document types (table tents, custom templates) from CSV data. Upload a CSV and optionally a template to create professional documents automatically.</span>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Document type selection
+        doc_type = st.selectbox(
+            "Document Type",
+            options=[DocumentType.TABLE_TENT, DocumentType.CUSTOM_TEMPLATE],
+            format_func=lambda x: "Table Tent" if x == DocumentType.TABLE_TENT else "Custom Template",
+            help="Select the type of document to generate",
+        )
+        
+        st.markdown("---")
+        
+        # CSV upload for document generation
+        st.subheader("Upload CSV Data")
+        doc_csv = st.file_uploader(
+            "Upload CSV file with data",
+            type=["csv"],
+            help="CSV should contain columns like: First Name, Last Name, Organization, Job Title (or custom column names)",
+            key="doc_csv_uploader"
+        )
+        
+        # Column mapping for flexible CSV formats
+        column_mapping = {}
+        csv_data = None
+        
+        if doc_csv is not None:
+            session_dir = get_temp_session_dir()
+            doc_csv_path = session_dir / f"doc_{doc_csv.name}"
+            with open(doc_csv_path, "wb") as f:
+                f.write(doc_csv.getbuffer())
+            
+            try:
+                csv_data = pd.read_csv(doc_csv_path, encoding="utf-8-sig")
+                st.success(f"CSV loaded: {len(csv_data)} rows")
+                st.dataframe(csv_data.head(10), use_container_width=True)
+                
+                # Column mapping interface
+                st.subheader("Column Mapping")
+                st.markdown("""
+                <div style="background: rgba(255, 107, 53, 0.05); border-left: 3px solid #FF6B35; padding: 1rem; margin-bottom: 1rem; font-family: 'Courier New', monospace; border-radius: 0px;">
+                <strong style="color: #FF6B35; text-shadow: none;">> [INFO]</strong> <span style="color: #FF6B35;">Map your CSV columns to standard field names. Leave unmapped if your CSV already uses standard names.</span>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                csv_columns = list(csv_data.columns)
+                standard_fields = ["First Name", "Last Name", "Organization", "Job Title"]
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.write("**CSV Column**")
+                with col2:
+                    st.write("**Standard Field**")
+                
+                for field in standard_fields:
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.write(field)
+                    with col2:
+                        selected_col = st.selectbox(
+                            f"Map to {field}",
+                            options=["(None)"] + csv_columns,
+                            key=f"map_{field}",
+                            label_visibility="collapsed"
+                        )
+                        if selected_col != "(None)":
+                            column_mapping[selected_col] = field
+                
+                st.session_state.doc_csv_path = doc_csv_path
+                st.session_state.doc_column_mapping = column_mapping
+                
+            except Exception as e:
+                st.error(f"Error reading CSV: {e}")
+        
+        st.markdown("---")
+        
+        # Image directory selection (optional)
+        st.subheader("Images (Optional)")
+        use_existing_images = st.checkbox(
+            "Use images from headshots directory",
+            value=False,
+            help="Match images from the headshots directory based on FirstName_LastName pattern"
+        )
+        
+        image_dir = None
+        if use_existing_images and st.session_state.headshot_dir:
+            image_dir = st.session_state.headshot_dir
+            image_count = len(list(image_dir.glob("*"))) if image_dir.exists() else 0
+            st.info(f"Using {image_count} images from headshots directory")
+        elif use_existing_images:
+            st.warning("No headshots directory available. Upload images in the 'Manage Images' tab first.")
+        
+        st.markdown("---")
+        
+        # Template upload (for custom template type)
+        template_path = None
+        if doc_type == DocumentType.CUSTOM_TEMPLATE:
+            st.subheader("Upload Template")
+            st.markdown("""
+            <div style="background: rgba(255, 107, 53, 0.05); border-left: 3px solid #FF6B35; padding: 1rem; margin-bottom: 1rem; font-family: 'Courier New', monospace; border-radius: 0px;">
+            <strong style="color: #FF6B35; text-shadow: none;">> [INFO]</strong> <span style="color: #FF6B35;">Upload a PDF or image template. The system will overlay data from your CSV onto the template.</span>
+            </div>
+            <div style="background: rgba(255, 107, 53, 0.05); border-left: 3px solid #FF6B35; padding: 1rem; margin-bottom: 1rem; font-family: 'Courier New', monospace; border-radius: 0px;">
+            <strong style="color: #FF6B35; text-shadow: none;">> [NOTE]</strong> <span style="color: #FF6B35;">For Google Drive templates: Download the file first, then upload it here. The system supports PDF, PNG, JPG, and WebP formats.</span>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            uploaded_template = st.file_uploader(
+                "Upload template file",
+                type=["pdf", "png", "jpg", "jpeg", "webp"],
+                help="Upload a PDF or image file to use as a template",
+                key="template_uploader"
+            )
+            
+            if uploaded_template is not None:
+                session_dir = get_temp_session_dir()
+                template_path = session_dir / f"template_{uploaded_template.name}"
+                with open(template_path, "wb") as f:
+                    f.write(uploaded_template.getbuffer())
+                st.session_state.template_path = template_path
+                st.success(f"Template uploaded: {uploaded_template.name}")
+            elif "template_path" in st.session_state:
+                template_path = st.session_state.template_path
+        
+        # Generation options
+        st.markdown("---")
+        st.subheader("Generation Options")
+        
+        if doc_type == DocumentType.TABLE_TENT:
+            include_images = st.checkbox("Include images", value=True, help="Include images in table tents if available")
+            font_size = st.slider("Name font size", min_value=20, max_value=48, value=32, step=2)
+        else:
+            include_images = True
+            font_size = 32
+        
+        # Generate button
+        if st.button("Generate Documents", type="primary"):
+            if doc_csv is None:
+                st.error("Please upload a CSV file first")
+            elif doc_type == DocumentType.CUSTOM_TEMPLATE and template_path is None:
+                st.error("Please upload a template file for custom template generation")
+            else:
+                loading_placeholder = st.empty()
+                loading_placeholder.markdown(show_hacker_loader("LOADING CSV DATA...", 0.1), unsafe_allow_html=True)
+                import time
+                time.sleep(0.2)
+                
+                try:
+                    # Load records
+                    doc_csv_path = st.session_state.get("doc_csv_path")
+                    if not doc_csv_path:
+                        st.error("CSV file not found in session")
+                        return
+                    
+                    column_mapping = st.session_state.get("doc_column_mapping", {})
+                    
+                    loading_placeholder.markdown(show_hacker_loader("PROCESSING RECORDS...", 0.3), unsafe_allow_html=True)
+                    time.sleep(0.2)
+                    
+                    records = load_records_from_csv(
+                        doc_csv_path,
+                        image_dir=image_dir if use_existing_images else None,
+                        column_mapping=column_mapping if column_mapping else None,
+                    )
+                    
+                    if not records:
+                        loading_placeholder.empty()
+                        st.error("No records found in CSV")
+                        return
+                    
+                    loading_placeholder.markdown(show_hacker_loader(f"GENERATING {len(records)} DOCUMENTS...", 0.6), unsafe_allow_html=True)
+                    time.sleep(0.2)
+                    
+                    # Generate documents
+                    temp_dir = Path(tempfile.mkdtemp())
+                    
+                    if doc_type == DocumentType.TABLE_TENT:
+                        output_path = temp_dir / "table_tents.pdf"
+                        generate_table_tents(
+                            records,
+                            output_path,
+                            include_images=include_images,
+                            font_size=font_size,
+                            font_name="Helvetica-Bold",
+                        )
+                    elif doc_type == DocumentType.CUSTOM_TEMPLATE:
+                        template_path = st.session_state.get("template_path")
+                        if not template_path:
+                            st.error("Template file not found")
+                            return
+                        output_path = temp_dir / "custom_documents.pdf"
+                        generate_from_template(
+                            records,
+                            template_path,
+                            output_path,
+                        )
+                    else:
+                        st.error(f"Unknown document type: {doc_type}")
+                        return
+                    
+                    loading_placeholder.markdown(show_hacker_loader("COMPLETE", 1.0), unsafe_allow_html=True)
+                    time.sleep(0.5)
+                    loading_placeholder.empty()
+                    
+                    # Display download button
+                    st.success(f"Generated {len(records)} documents!")
+                    
+                    with open(output_path, "rb") as pdf_file:
+                        doc_type_name = "Table Tents" if doc_type == DocumentType.TABLE_TENT else "Custom Documents"
+                        st.download_button(
+                            label=f"Download {doc_type_name} PDF",
+                            data=pdf_file.read(),
+                            file_name=output_path.name,
+                            mime="application/pdf",
+                            key="download_documents",
+                        )
+                    
+                    st.balloons()
+                    
+                except Exception as e:
+                    loading_placeholder.empty()
+                    st.error(f"Error generating documents: {e}")
                     st.exception(e)
 
 

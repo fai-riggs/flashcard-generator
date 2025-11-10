@@ -1,6 +1,6 @@
 # Deployment Guide: Streamlit Cloud
 
-This guide will help you deploy the Flashcard & Facebook Generator app to Streamlit Cloud (free hosting).
+This guide will help you deploy the FAI Document Generator app to Streamlit Cloud (free hosting).
 
 ## Prerequisites
 
@@ -13,11 +13,11 @@ This guide will help you deploy the Flashcard & Facebook Generator app to Stream
    ```bash
    git init
    git add .
-   git commit -m "Initial commit: Flashcard & Facebook Generator"
+   git commit -m "Initial commit: FAI Document Generator"
    ```
 
 2. Create a new repository on GitHub (https://github.com/new)
-   - Name it something like `flashcard-generator` or `gala-headshots`
+   - Name it something like `fai-document-generator` or `gala-headshots`
    - Make it public (required for free Streamlit Cloud)
    - Don't initialize with README (you already have one)
 
@@ -36,8 +36,8 @@ This guide will help you deploy the Flashcard & Facebook Generator app to Stream
 4. Fill in the details:
    - **Repository**: Select your repository
    - **Branch**: `main` (or `master`)
-   - **Main file path**: `flashcard_app.py`
-   - **App URL**: Choose a custom subdomain (e.g., `gala-flashcards`)
+   - **Main file path**: `fai_document_generator.py`
+   - **App URL**: Choose a custom subdomain (e.g., `fai-doc-generator`)
 5. Click "Deploy!"
 
 ## Step 3: Set Up Password Protection
@@ -53,7 +53,7 @@ The app includes password protection. To set your password:
 4. Click "Save"
 5. The app will automatically redeploy with the new password
 
-**Note**: The default password is `flashcardsarefun` - you can change it in secrets if needed.
+**Note**: The default password is `pdfhack` - you can change it in secrets if needed.
 
 ## Step 4: Get Your App URL
 
@@ -71,9 +71,9 @@ https://YOUR_APP_NAME.streamlit.app
 5. Save the page
 
 ### Example Link Text:
-- "Flashcard & Facebook Generator"
-- "Generate Event Flashcards"
-- "📇 Create Flashcards & Facebooks"
+- "FAI Document Generator"
+- "Generate Event Documents"
+- "📇 Create Documents & Table Tents"
 
 ## Important Notes
 
@@ -87,11 +87,11 @@ https://YOUR_APP_NAME.streamlit.app
 
 ### App won't deploy
 - Check that `requirements.txt` includes all dependencies
-- Ensure `flashcard_app.py` is in the root directory
+- Ensure `fai_document_generator.py` is in the root directory
 - Verify the main file path is correct
 
 ### Import errors
-- Make sure `generate_flashcards.py` is in the same directory as `flashcard_app.py`
+- Make sure `generate_flashcards.py` and `generate_documents.py` are in the same directory as `fai_document_generator.py`
 - Check that all imports in `requirements.txt` are correct
 
 ### App is slow
