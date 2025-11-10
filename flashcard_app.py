@@ -561,7 +561,7 @@ def check_password() -> bool:
 def download_image_from_url(url: str, directory: Path, filename: str) -> Optional[Path]:
     """Download an image from a URL and save it to the specified directory."""
     try:
-    directory.mkdir(parents=True, exist_ok=True)
+        directory.mkdir(parents=True, exist_ok=True)
         
         # Download the image
         headers = {
