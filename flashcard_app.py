@@ -123,12 +123,63 @@ st.markdown("""
     }
     
     /* Selectbox and radio */
-    .stSelectbox > div > div > select,
-    .stRadio > div > label {
+    .stSelectbox > div > div > select {
         background-color: #0A0E27 !important;
         color: #E0E0E0 !important;
         border: 1px solid #FF6B35 !important;
         font-family: 'Courier New', monospace;
+    }
+    
+    /* Enhanced Radio Buttons */
+    .stRadio > div {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 2rem !important;
+        flex-wrap: wrap !important;
+    }
+    
+    .stRadio > div > label {
+        background: linear-gradient(135deg, rgba(26, 31, 58, 0.9) 0%, rgba(10, 14, 39, 0.9) 100%) !important;
+        color: #E0E0E0 !important;
+        border: 2px solid #FF6B35 !important;
+        border-radius: 8px !important;
+        font-family: 'Courier New', monospace !important;
+        font-size: 1.1rem !important;
+        font-weight: bold !important;
+        padding: 1.2rem 2rem !important;
+        min-width: 250px !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 0 10px rgba(255, 107, 53, 0.2) !important;
+        letter-spacing: 1px !important;
+        text-transform: uppercase !important;
+    }
+    
+    .stRadio > div > label:hover {
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(26, 31, 58, 0.9) 100%) !important;
+        border-color: #FF8C42 !important;
+        box-shadow: 0 0 20px rgba(255, 107, 53, 0.4) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    .stRadio > div > label[data-baseweb="radio"] {
+        margin-right: 1rem !important;
+    }
+    
+    /* Selected radio button */
+    .stRadio > div > label:has(input[checked]) {
+        background: linear-gradient(135deg, rgba(255, 107, 53, 0.2) 0%, rgba(26, 31, 58, 0.9) 100%) !important;
+        border-color: #FF6B35 !important;
+        box-shadow: 0 0 25px rgba(255, 107, 53, 0.6) !important;
+        color: #FF6B35 !important;
+    }
+    
+    /* Radio button circle */
+    .stRadio input[type="radio"] {
+        width: 20px !important;
+        height: 20px !important;
+        margin-right: 1rem !important;
+        accent-color: #FF6B35 !important;
     }
     
     /* Checkbox */
@@ -247,6 +298,89 @@ st.markdown("""
     .main .block-container {
         animation: borderGlow 3s ease-in-out infinite;
     }
+    
+    /* Hacker Loading Animation */
+    @keyframes hackScan {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100vw); }
+    }
+    
+    @keyframes glitch {
+        0%, 100% { transform: translate(0); }
+        20% { transform: translate(-2px, 2px); }
+        40% { transform: translate(-2px, -2px); }
+        60% { transform: translate(2px, 2px); }
+        80% { transform: translate(2px, -2px); }
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+    
+    .hacker-loader {
+        background: rgba(10, 14, 39, 0.95);
+        border: 2px solid #FF6B35;
+        border-radius: 8px;
+        padding: 2rem;
+        margin: 2rem 0;
+        box-shadow: 0 0 30px rgba(255, 107, 53, 0.4);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hacker-loader::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+        animation: hackScan 2s infinite;
+    }
+    
+    .hacker-text {
+        font-family: 'Courier New', monospace;
+        color: #FF6B35;
+        text-shadow: 0 0 7px #FF6B35;
+        font-size: 1.2rem;
+        letter-spacing: 2px;
+        animation: glitch 0.3s infinite;
+    }
+    
+    .hacker-progress {
+        width: 100%;
+        height: 30px;
+        background: #0A0E27;
+        border: 2px solid #FF6B35;
+        border-radius: 4px;
+        margin-top: 1rem;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .hacker-progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #FF6B35, #FF8C42, #FF6B35);
+        background-size: 200% 100%;
+        animation: progressFlow 2s linear infinite;
+        box-shadow: 0 0 20px rgba(255, 107, 53, 0.8);
+        transition: width 0.3s ease;
+    }
+    
+    @keyframes progressFlow {
+        0% { background-position: 0% 0%; }
+        100% { background-position: 200% 0%; }
+    }
+    
+    .hacker-status {
+        font-family: 'Courier New', monospace;
+        color: #E0E0E0;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        letter-spacing: 1px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -362,6 +496,21 @@ def clear_session_data():
     st.session_state.csv_path = None
     st.session_state.airtable_url = None
     st.session_state.airtable_api_key = None
+
+
+def show_hacker_loader(status_text: str, progress: float = 0.0) -> str:
+    """Return HTML for a hacker-style loading animation with progress bar."""
+    progress_pct = min(100, max(0, int(progress * 100)))
+    
+    return f"""
+    <div class="hacker-loader">
+        <div class="hacker-text">[SYSTEM] {status_text}</div>
+        <div class="hacker-progress">
+            <div class="hacker-progress-bar" style="width: {progress_pct}%;"></div>
+        </div>
+        <div class="hacker-status">> PROGRESS: {progress_pct}% | STATUS: ACTIVE</div>
+    </div>
+    """
 
 
 def get_image_preview(image_path: Path, max_size: tuple[int, int] = (150, 150)) -> Optional[Image.Image]:
@@ -525,14 +674,18 @@ def main():
             
             if airtable_url and airtable_api_key:
                 if st.button("Test Airtable Connection", type="primary"):
-                    with st.spinner("Connecting to Airtable..."):
-                        try:
+                    loading_placeholder = st.empty()
+                    loading_placeholder.markdown(show_hacker_loader("TESTING CONNECTION...", 0.3), unsafe_allow_html=True)
+                    try:
                             from generate_flashcards import parse_airtable_url
                             parsed = parse_airtable_url(airtable_url)
                             if parsed:
                                 base_id, table_id = parsed
-                                st.success(f"URL parsed successfully!")
-                                st.info(f"**Base ID:** `{base_id[:8]}...`  **Table ID:** `{table_id[:8]}...`")
+                                loading_placeholder.markdown(show_hacker_loader("AUTHENTICATING...", 0.6), unsafe_allow_html=True)
+                                import time
+                                time.sleep(0.3)
+                                
+                                loading_placeholder.markdown(show_hacker_loader("FETCHING DATA...", 0.9), unsafe_allow_html=True)
                                 
                                 # Try to fetch a sample record
                                 try:
@@ -540,16 +693,23 @@ def main():
                                     api = Api(airtable_api_key)
                                     table = api.table(base_id, table_id)
                                     sample = table.first()
+                                    
+                                    loading_placeholder.empty()
                                     if sample:
+                                        st.success(f"URL parsed successfully!")
+                                        st.info(f"**Base ID:** `{base_id[:8]}...`  **Table ID:** `{table_id[:8]}...`")
                                         st.success(f"Connection successful! Found table with fields.")
                                         if "fields" in sample:
                                             st.info(f"**Available fields:** {', '.join(list(sample['fields'].keys())[:10])}")
                                 except Exception as e:
+                                    loading_placeholder.empty()
                                     st.error(f"Could not connect to Airtable: {e}")
                                     st.info("Make sure your API key has access to this base.")
                             else:
+                                loading_placeholder.empty()
                                 st.error("Could not parse Airtable URL. Make sure it's a valid Airtable link.")
                         except Exception as e:
+                            loading_placeholder.empty()
                             st.error(f"Error: {e}")
             
             # Store in session state for later use
@@ -650,43 +810,77 @@ def main():
             st.warning("Please upload CSV or connect to Airtable, and set headshots directory first.")
         else:
             if st.button("Load & Match Attendees"):
-                with st.spinner("Loading attendees and matching images..."):
-                    try:
-                        # Load from Airtable or CSV
-                        if st.session_state.airtable_url and st.session_state.airtable_api_key:
-                            attendees = load_attendees_from_airtable(
-                                st.session_state.airtable_url,
-                                st.session_state.airtable_api_key,
-                                st.session_state.headshot_dir,
-                            )
-                            st.info("Loaded from Airtable")
-                        elif st.session_state.csv_path:
-                            attendees = load_attendees(
-                                st.session_state.csv_path,
-                                st.session_state.headshot_dir,
-                            )
-                            st.info("Loaded from CSV")
-                        else:
-                            st.error("No data source available")
-                            attendees = []
+                loading_placeholder = st.empty()
+                
+                try:
+                    # Load from Airtable or CSV
+                    if st.session_state.airtable_url and st.session_state.airtable_api_key:
+                        loading_placeholder.markdown(show_hacker_loader("CONNECTING TO AIRTABLE...", 0.1), unsafe_allow_html=True)
+                        import time
+                        time.sleep(0.3)
                         
-                        # Apply FAI exclusion if enabled
-                        if exclude_fai:
-                            original_count = len(attendees)
-                            attendees = filter_attendees(attendees, DEFAULT_EXCLUDED_ORGANIZATIONS)
-                            excluded_count = original_count - len(attendees)
-                            if excluded_count > 0:
-                                st.info(f"Excluded {excluded_count} attendee(s) from Foundation for American Innovation")
+                        loading_placeholder.markdown(show_hacker_loader("PARSING URL...", 0.2), unsafe_allow_html=True)
+                        time.sleep(0.2)
                         
-                        st.session_state.attendees_data = attendees
+                        loading_placeholder.markdown(show_hacker_loader("AUTHENTICATING...", 0.3), unsafe_allow_html=True)
+                        time.sleep(0.3)
                         
-                        if attendees:
-                            st.success(f"Matched {len(attendees)} attendees with images")
-                        else:
-                            st.error("No attendees matched. Check data format and image filenames.")
-                    except Exception as e:
-                        st.error(f"Error loading attendees: {e}")
-                        st.exception(e)
+                        loading_placeholder.markdown(show_hacker_loader("FETCHING RECORDS...", 0.5), unsafe_allow_html=True)
+                        attendees = load_attendees_from_airtable(
+                            st.session_state.airtable_url,
+                            st.session_state.airtable_api_key,
+                            st.session_state.headshot_dir,
+                        )
+                        
+                        loading_placeholder.markdown(show_hacker_loader("PROCESSING IMAGES...", 0.7), unsafe_allow_html=True)
+                        time.sleep(0.3)
+                        
+                        loading_placeholder.markdown(show_hacker_loader("MATCHING HEADSHOTS...", 0.9), unsafe_allow_html=True)
+                        time.sleep(0.2)
+                        
+                        loading_placeholder.empty()
+                        st.info("Loaded from Airtable")
+                    elif st.session_state.csv_path:
+                        loading_placeholder.markdown(show_hacker_loader("PARSING CSV...", 0.2), unsafe_allow_html=True)
+                        import time
+                        time.sleep(0.2)
+                        
+                        loading_placeholder.markdown(show_hacker_loader("LOADING ATTENDEES...", 0.4), unsafe_allow_html=True)
+                        attendees = load_attendees(
+                            st.session_state.csv_path,
+                            st.session_state.headshot_dir,
+                        )
+                        
+                        loading_placeholder.markdown(show_hacker_loader("PROCESSING IMAGES...", 0.7), unsafe_allow_html=True)
+                        time.sleep(0.3)
+                        
+                        loading_placeholder.markdown(show_hacker_loader("MATCHING HEADSHOTS...", 0.9), unsafe_allow_html=True)
+                        time.sleep(0.2)
+                        
+                        loading_placeholder.empty()
+                        st.info("Loaded from CSV")
+                    else:
+                        st.error("No data source available")
+                        attendees = []
+                    
+                    # Apply FAI exclusion if enabled
+                    if exclude_fai:
+                        original_count = len(attendees)
+                        attendees = filter_attendees(attendees, DEFAULT_EXCLUDED_ORGANIZATIONS)
+                        excluded_count = original_count - len(attendees)
+                        if excluded_count > 0:
+                            st.info(f"Excluded {excluded_count} attendee(s) from Foundation for American Innovation")
+                    
+                    st.session_state.attendees_data = attendees
+                    
+                    if attendees:
+                        st.success(f"Matched {len(attendees)} attendees with images")
+                    else:
+                        st.error("No attendees matched. Check data format and image filenames.")
+                except Exception as e:
+                    loading_placeholder.empty()
+                    st.error(f"Error loading attendees: {e}")
+                    st.exception(e)
             
             if st.session_state.attendees_data:
                 attendees = st.session_state.attendees_data
@@ -765,37 +959,63 @@ def main():
             generate_facebooks = st.checkbox("Generate Facebook Proof", value=False, help="Five attendees per page, headshot left, details right")
             
             if st.button("Generate PDFs", type="primary"):
-                with st.spinner("Generating PDFs..."):
-                    attendees_to_use = attendees[:limit_cards] if limit_cards > 0 else attendees
-                    
-                    temp_dir = Path(tempfile.mkdtemp())
-                    pdf_files = {}
-                    
+                loading_placeholder = st.empty()
+                loading_placeholder.markdown(show_hacker_loader("INITIALIZING PDF GENERATION...", 0.1), unsafe_allow_html=True)
+                import time
+                time.sleep(0.2)
+                
+                attendees_to_use = attendees[:limit_cards] if limit_cards > 0 else attendees
+                
+                temp_dir = Path(tempfile.mkdtemp())
+                pdf_files = {}
+                
                     try:
+                        total_tasks = sum([generate_combined, generate_fronts, generate_backs, generate_guides, generate_facebooks])
+                        current_task = 0
+                        
                         if generate_combined:
+                            current_task += 1
+                            loading_placeholder.markdown(show_hacker_loader(f"GENERATING COMBINED PDF... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
                             combined_path = temp_dir / "flashcards_duplex.pdf"
                             draw_combined(attendees_to_use, combined_path, duplex_mode=duplex_mode)
                             pdf_files["Combined PDF"] = combined_path
+                            time.sleep(0.2)
                         
                         if generate_fronts:
+                            current_task += 1
+                            loading_placeholder.markdown(show_hacker_loader(f"GENERATING FRONTS... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
                             fronts_path = temp_dir / "flashcards_fronts.pdf"
                             draw_fronts(attendees_to_use, fronts_path)
                             pdf_files["Fronts PDF"] = fronts_path
+                            time.sleep(0.2)
                         
                         if generate_backs:
+                            current_task += 1
+                            loading_placeholder.markdown(show_hacker_loader(f"GENERATING BACKS... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
                             backs_path = temp_dir / "flashcards_backs.pdf"
                             draw_backs(attendees_to_use, backs_path, duplex_mode=duplex_mode)
                             pdf_files["Backs PDF"] = backs_path
+                            time.sleep(0.2)
                         
                         if generate_guides:
+                            current_task += 1
+                            loading_placeholder.markdown(show_hacker_loader(f"GENERATING CUT GUIDES... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
                             guides_path = temp_dir / "flashcards_cut_guides.pdf"
                             draw_guides(attendees_to_use, guides_path, duplex_mode=duplex_mode)
                             pdf_files["Cut Guides PDF"] = guides_path
+                            time.sleep(0.2)
                         
                         if generate_facebooks:
+                            current_task += 1
+                            loading_placeholder.markdown(show_hacker_loader(f"GENERATING FACEBOOK PROOF... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
                             facebooks_path = temp_dir / "facebook_proof.pdf"
                             draw_facebooks(attendees_to_use, facebooks_path)
                             pdf_files["Facebook Proof PDF"] = facebooks_path
+                            time.sleep(0.2)
+                        
+                        loading_placeholder.markdown(show_hacker_loader("COMPLETE", 1.0), unsafe_allow_html=True)
+                        time.sleep(0.5)
+                        loading_placeholder.empty()
                         
                         # Display download buttons
                         st.success(f"Generated {len(pdf_files)} PDF file(s)")
