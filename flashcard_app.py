@@ -771,15 +771,15 @@ def main():
                     st.success(f"CSV loaded: {len(df)} rows")
                     st.dataframe(df.head(10), use_container_width=True)
                 
-                # Check required columns
-                required_cols = ["First Name", "Last Name"]
-                missing_cols = [col for col in required_cols if col not in df.columns]
-                if missing_cols:
+                    # Check required columns
+                    required_cols = ["First Name", "Last Name"]
+                    missing_cols = [col for col in required_cols if col not in df.columns]
+                    if missing_cols:
                         st.error(f"Missing required columns: {', '.join(missing_cols)}")
-                else:
+                    else:
                         st.info("Required columns found")
-            except Exception as e:
-                st.error(f"Error reading CSV: {e}")
+                except Exception as e:
+                    st.error(f"Error reading CSV: {e}")
         
         else:  # Airtable import
             st.subheader("Import from Airtable")
