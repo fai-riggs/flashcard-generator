@@ -130,7 +130,7 @@ st.markdown("""
         border: 1px solid #FF6B35 !important;
         border-radius: 0px !important;
         font-family: 'Courier New', monospace !important;
-        box-shadow: 0 0 5px rgba(255, 107, 53, 0.3);
+        box-shadow: none !important;
     }
     
     .stTextInput > div > div > input:focus {
@@ -497,10 +497,10 @@ if "temp_base_dir" not in st.session_state:
 def get_password() -> str:
     """Get password from Streamlit secrets or use default."""
     try:
-        return st.secrets.get("app_password", "flashcardsarefun")
+        return st.secrets.get("app_password", "pdfhack")
     except (AttributeError, FileNotFoundError):
         # Fallback if secrets.toml doesn't exist
-        return "flashcardsarefun"
+        return "pdfhack"
 
 
 def check_password() -> bool:
