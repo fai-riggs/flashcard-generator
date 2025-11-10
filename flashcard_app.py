@@ -139,6 +139,30 @@ st.markdown("""
         outline: none !important;
     }
     
+    /* Password input on login screen - no border */
+    input[type="password"][data-baseweb="input"] {
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+        color: #FF6B35 !important;
+        font-family: 'Courier New', monospace !important;
+        font-size: 16px !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+    }
+    
+    input[type="password"][data-baseweb="input"]:focus {
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    
+    .stTextInput > div > div[data-baseweb="base-input"] {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
     .stTextInput label {
         color: #FF6B35 !important;
         font-family: 'Courier New', monospace !important;
@@ -527,10 +551,28 @@ def check_password() -> bool:
         0%, 50% { opacity: 1; }
         51%, 100% { opacity: 0; }
     }
+    .terminal-input {
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+        color: #FF6B35 !important;
+        font-family: 'Courier New', monospace !important;
+        font-size: 16px !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        width: 100% !important;
+    }
+    .terminal-input:focus {
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    .terminal-input::placeholder {
+        color: transparent !important;
+    }
     </style>
     <div class="terminal-prompt">
         <span>></span>
-        <span class="blink-cursor">_</span>
     </div>
     """, unsafe_allow_html=True)
     
