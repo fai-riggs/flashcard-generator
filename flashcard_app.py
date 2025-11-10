@@ -51,7 +51,7 @@ st.markdown("""
     /* Headers with orange glow */
     h1, h2, h3 {
         color: #FF6B35 !important;
-        text-shadow: 0 0 7px #FF6B35, 0 0 14px #FF6B35, 0 0 21px #FF6B35;
+        text-shadow: 0 0 7px #FF6B35;
         font-family: 'Courier New', monospace !important;
         font-weight: bold !important;
         letter-spacing: 2px;
@@ -196,7 +196,7 @@ st.markdown("""
         color: #FF6B35 !important;
         font-family: 'Courier New', monospace;
         font-weight: bold;
-        text-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+        text-shadow: 0 0 7px #FF6B35;
     }
     
     [data-testid="stMetricLabel"] {
@@ -282,7 +282,7 @@ def check_password() -> bool:
     # Hacker-style password input form
     st.markdown("""
     <div style="text-align: center; padding: 3rem 0;">
-        <h1 style="color: #FF6B35; text-shadow: 0 0 14px #FF6B35; font-family: 'Courier New', monospace; letter-spacing: 5px;">
+        <h1 style="color: #FF6B35; text-shadow: 0 0 7px #FF6B35; font-family: 'Courier New', monospace; letter-spacing: 5px;">
             [ACCESS DENIED]
         </h1>
         <p style="color: #E0E0E0; font-family: 'Courier New', monospace; margin-top: 2rem; letter-spacing: 2px;">
@@ -354,7 +354,7 @@ def main():
     # Hacker-style header
     st.markdown("""
     <div style="text-align: center; padding: 2rem 0; border-bottom: 2px solid #FF6B35; margin-bottom: 2rem;">
-        <h1 style="margin: 0; font-size: 3rem; text-shadow: 0 0 14px #FF6B35;">FLASHCARD GENERATOR</h1>
+        <h1 style="margin: 0; font-size: 3rem; text-shadow: 0 0 7px #FF6B35;">FLASHCARD GENERATOR</h1>
         <p style="color: #FF6B35; font-family: 'Courier New', monospace; letter-spacing: 3px; margin-top: 1rem;">
             [SYSTEM] INITIALIZING... [READY]
         </p>
