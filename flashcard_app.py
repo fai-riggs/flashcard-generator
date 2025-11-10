@@ -57,13 +57,13 @@ st.markdown("""
         border-radius: 0px !important;
         padding: 1.5rem;
         margin-top: 1rem;
-        box-shadow: 0 0 15px rgba(255, 107, 53, 0.4);
+        box-shadow: none !important;
     }
     
-    /* Headers - bright orange with strong glow */
+    /* Headers - bright orange, no glow */
     h1, h2, h3, h4, h5, h6 {
         color: #FF6B35 !important;
-        text-shadow: 0 0 10px #FF6B35, 0 0 20px rgba(255, 107, 53, 0.5) !important;
+        text-shadow: none !important;
         font-family: 'Courier New', monospace !important;
         font-weight: bold !important;
         letter-spacing: 1px;
@@ -86,7 +86,7 @@ st.markdown("""
     [data-testid="stSidebar"] {
         background: #000000 !important;
         border-right: 2px solid #FF6B35;
-        box-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+        box-shadow: none !important;
     }
     
     [data-testid="stSidebar"] * {
@@ -94,7 +94,7 @@ st.markdown("""
         font-family: 'Courier New', monospace !important;
     }
     
-    /* Buttons - terminal style, sharp corners */
+    /* Buttons - terminal style, sharp corners, no glow */
     .stButton > button {
         background: #000000 !important;
         color: #FF6B35 !important;
@@ -104,21 +104,22 @@ st.markdown("""
         font-family: 'Courier New', monospace !important;
         text-transform: uppercase;
         letter-spacing: 2px;
-        box-shadow: 0 0 10px rgba(255, 107, 53, 0.6), inset 0 0 10px rgba(255, 107, 53, 0.1);
+        box-shadow: none !important;
+        text-shadow: none !important;
         transition: all 0.2s ease;
         padding: 0.75rem 1.5rem;
     }
     
     .stButton > button:hover {
         background: rgba(255, 107, 53, 0.1) !important;
-        box-shadow: 0 0 20px rgba(255, 107, 53, 0.9), inset 0 0 15px rgba(255, 107, 53, 0.2);
-        text-shadow: 0 0 10px #FF6B35;
+        box-shadow: none !important;
+        text-shadow: none !important;
     }
     
-    /* Primary button - brighter glow */
+    /* Primary button */
     .stButton > button[kind="primary"] {
         background: rgba(255, 107, 53, 0.15) !important;
-        box-shadow: 0 0 15px rgba(255, 107, 53, 0.8), inset 0 0 15px rgba(255, 107, 53, 0.2);
+        box-shadow: none !important;
         border: 2px solid #FF6B35 !important;
     }
     
@@ -134,7 +135,7 @@ st.markdown("""
     
     .stTextInput > div > div > input:focus {
         border: 2px solid #FF6B35 !important;
-        box-shadow: 0 0 15px rgba(255, 107, 53, 0.7) !important;
+        box-shadow: none !important;
         outline: none !important;
     }
     
@@ -158,7 +159,7 @@ st.markdown("""
         border: 1px solid #FF6B35 !important;
         border-radius: 0px !important;
         font-family: 'Courier New', monospace !important;
-        box-shadow: 0 0 5px rgba(255, 107, 53, 0.3);
+        box-shadow: none !important;
     }
     
     .stSelectbox label {
@@ -186,24 +187,25 @@ st.markdown("""
         min-width: 200px !important;
         cursor: pointer !important;
         transition: all 0.2s ease !important;
-        box-shadow: 0 0 8px rgba(255, 107, 53, 0.4) !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
         letter-spacing: 1px !important;
         text-transform: uppercase !important;
     }
     
     .stRadio > div > label:hover {
         background: rgba(255, 107, 53, 0.1) !important;
-        box-shadow: 0 0 15px rgba(255, 107, 53, 0.7) !important;
-        text-shadow: 0 0 8px #FF6B35;
+        box-shadow: none !important;
+        text-shadow: none !important;
     }
     
     /* Selected radio button */
     .stRadio > div > label:has(input[checked]) {
         background: rgba(255, 107, 53, 0.2) !important;
         border-color: #FF6B35 !important;
-        box-shadow: 0 0 20px rgba(255, 107, 53, 0.8) !important;
+        box-shadow: none !important;
         color: #FF6B35 !important;
-        text-shadow: 0 0 10px #FF6B35;
+        text-shadow: none !important;
     }
     
     /* Radio button circle */
@@ -241,7 +243,7 @@ st.markdown("""
     .stTabs [aria-selected="true"] {
         color: #FF6B35 !important;
         border-bottom: 3px solid #FF6B35;
-        text-shadow: 0 0 10px #FF6B35;
+        text-shadow: none !important;
         background: rgba(255, 107, 53, 0.1) !important;
     }
     
@@ -252,7 +254,7 @@ st.markdown("""
         border-radius: 0px !important;
         color: #FF6B35 !important;
         font-family: 'Courier New', monospace !important;
-        box-shadow: 0 0 8px rgba(255, 107, 53, 0.3);
+        box-shadow: none !important;
     }
     
     .stInfo {
@@ -261,7 +263,7 @@ st.markdown("""
         border-radius: 0px !important;
         color: #FF6B35 !important;
         font-family: 'Courier New', monospace !important;
-        box-shadow: 0 0 8px rgba(255, 107, 53, 0.3);
+        box-shadow: none !important;
     }
     
     .stError {
@@ -270,7 +272,7 @@ st.markdown("""
         border-radius: 0px !important;
         color: #FF6B6B !important;
         font-family: 'Courier New', monospace !important;
-        box-shadow: 0 0 8px rgba(255, 0, 0, 0.3);
+        box-shadow: none !important;
     }
     
     .stWarning {
@@ -279,7 +281,7 @@ st.markdown("""
         border-radius: 0px !important;
         color: #FFA500 !important;
         font-family: 'Courier New', monospace !important;
-        box-shadow: 0 0 8px rgba(255, 165, 0, 0.3);
+        box-shadow: none !important;
     }
     
     /* Dataframes - terminal style */
@@ -294,7 +296,7 @@ st.markdown("""
         color: #FF6B35 !important;
         font-family: 'Courier New', monospace !important;
         font-weight: bold;
-        text-shadow: 0 0 10px #FF6B35;
+        text-shadow: none !important;
     }
     
     [data-testid="stMetricLabel"] {
@@ -307,7 +309,7 @@ st.markdown("""
         border: 1px solid #FF6B35 !important;
         border-radius: 0px !important;
         padding: 1rem;
-        box-shadow: 0 0 8px rgba(255, 107, 53, 0.3);
+        box-shadow: none !important;
     }
     
     /* Expander - terminal style */
@@ -354,12 +356,12 @@ st.markdown("""
     ::-webkit-scrollbar-thumb {
         background: #FF6B35;
         border-radius: 0px;
-        box-shadow: 0 0 5px rgba(255, 107, 53, 0.5);
+        box-shadow: none !important;
     }
     
     ::-webkit-scrollbar-thumb:hover {
         background: #FF8C42;
-        box-shadow: 0 0 10px rgba(255, 107, 53, 0.8);
+        box-shadow: none !important;
     }
     
     /* Hacker Loading Animation */
@@ -387,7 +389,7 @@ st.markdown("""
         border-radius: 0px;
         padding: 2rem;
         margin: 2rem 0;
-        box-shadow: 0 0 30px rgba(255, 107, 53, 0.6);
+        box-shadow: none !important;
         position: relative;
         overflow: hidden;
     }
@@ -406,7 +408,7 @@ st.markdown("""
     .hacker-text {
         font-family: 'Courier New', monospace;
         color: #FF6B35;
-        text-shadow: 0 0 7px #FF6B35;
+        text-shadow: none !important;
         font-size: 1.2rem;
         letter-spacing: 2px;
         animation: glitch 0.3s infinite;
@@ -428,7 +430,7 @@ st.markdown("""
         background: linear-gradient(90deg, #FF6B35, #FF8C42, #FF6B35);
         background-size: 200% 100%;
         animation: progressFlow 2s linear infinite;
-        box-shadow: 0 0 20px rgba(255, 107, 53, 0.8);
+        box-shadow: none !important;
         transition: width 0.3s ease;
     }
     
@@ -443,7 +445,7 @@ st.markdown("""
         font-size: 0.9rem;
         margin-top: 0.5rem;
         letter-spacing: 1px;
-        text-shadow: 0 0 5px #FF6B35;
+        text-shadow: none !important;
     }
     
     /* Download buttons */
@@ -453,12 +455,12 @@ st.markdown("""
         border: 2px solid #FF6B35 !important;
         border-radius: 0px !important;
         font-family: 'Courier New', monospace !important;
-        box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+        box-shadow: none !important;
     }
     
     .stDownloadButton > button:hover {
         background: rgba(255, 107, 53, 0.1) !important;
-        box-shadow: 0 0 15px rgba(255, 107, 53, 0.8);
+        box-shadow: none !important;
     }
     
     /* Captions */
@@ -470,7 +472,7 @@ st.markdown("""
     /* Images */
     img {
         border: 1px solid #FF6B35;
-        box-shadow: 0 0 10px rgba(255, 107, 53, 0.4);
+        box-shadow: none !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -518,11 +520,11 @@ def check_password() -> bool:
         font-size: 16px;
         line-height: 1.8;
         border: 2px solid #FF6B35;
-        box-shadow: 0 0 30px rgba(255, 107, 53, 0.6);
+        box-shadow: none !important;
     }
     .edex-prompt {
         color: #FF6B35;
-        text-shadow: 0 0 10px #FF6B35, 0 0 20px rgba(255, 107, 53, 0.5);
+        text-shadow: none !important;
         font-weight: bold;
         letter-spacing: 1px;
     }
@@ -672,16 +674,16 @@ def main():
     # eDEX-UI style header
     st.markdown("""
     <div style="text-align: center; padding: 2rem 0; border-bottom: 2px solid #FF6B35; margin-bottom: 2rem; background: #000000;">
-        <h1 style="margin: 0; font-size: 3rem; text-shadow: 0 0 15px #FF6B35, 0 0 30px rgba(255, 107, 53, 0.5); letter-spacing: 4px;">FLASHCARD GENERATOR</h1>
-        <p style="color: #FF6B35; font-family: 'Courier New', monospace; letter-spacing: 3px; margin-top: 1rem; text-shadow: 0 0 8px #FF6B35;">
+        <h1 style="margin: 0; font-size: 3rem; text-shadow: none; letter-spacing: 4px;">FLASHCARD GENERATOR</h1>
+        <p style="color: #FF6B35; font-family: 'Courier New', monospace; letter-spacing: 3px; margin-top: 1rem; text-shadow: none;">
             > [SYSTEM] INITIALIZING... [READY]
         </p>
     </div>
     """, unsafe_allow_html=True)
     
     st.markdown("""
-    <div style="background: rgba(255, 107, 53, 0.05); border-left: 3px solid #FF6B35; padding: 1rem; margin-bottom: 2rem; font-family: 'Courier New', monospace; border-radius: 0px;">
-        <strong style="color: #FF6B35; text-shadow: 0 0 8px #FF6B35;">> [INFO]</strong> <span style="color: #FF6B35;">Create printable flashcards and facebooks for events with attendee names and headshots.</span>
+        <div style="background: rgba(255, 107, 53, 0.05); border-left: 3px solid #FF6B35; padding: 1rem; margin-bottom: 2rem; font-family: 'Courier New', monospace; border-radius: 0px;">
+        <strong style="color: #FF6B35; text-shadow: none;">> [INFO]</strong> <span style="color: #FF6B35;">Create printable flashcards and facebooks for events with attendee names and headshots.</span>
     </div>
     """, unsafe_allow_html=True)
 
@@ -689,7 +691,7 @@ def main():
     with st.sidebar:
         st.markdown("""
         <div style="border-bottom: 2px solid #FF6B35; padding-bottom: 1rem; margin-bottom: 1rem;">
-            <h2 style="color: #FF6B35; text-shadow: 0 0 10px #FF6B35, 0 0 20px rgba(255, 107, 53, 0.5); font-family: 'Courier New', monospace; letter-spacing: 2px;">
+            <h2 style="color: #FF6B35; text-shadow: none; font-family: 'Courier New', monospace; letter-spacing: 2px;">
                 > [CONFIG]
             </h2>
         </div>
@@ -873,7 +875,7 @@ def main():
         st.subheader("Headshot Images")
         st.markdown("""
         <div style="background: rgba(255, 107, 53, 0.05); border-left: 3px solid #FF6B35; padding: 1rem; margin-bottom: 1rem; font-family: 'Courier New', monospace; border-radius: 0px;">
-            <strong style="color: #FF6B35; text-shadow: 0 0 8px #FF6B35;">> [INFO]</strong> <span style="color: #FF6B35;">Images are stored temporarily in session memory and will be cleared when you switch data sources or close the session.</span>
+            <strong style="color: #FF6B35; text-shadow: none;">> [INFO]</strong> <span style="color: #FF6B35;">Images are stored temporarily in session memory and will be cleared when you switch data sources or close the session.</span>
         </div>
         """, unsafe_allow_html=True)
         
@@ -898,7 +900,7 @@ def main():
             
             st.markdown("""
             <div style="background: rgba(255, 107, 53, 0.05); border-left: 3px solid #FF6B35; padding: 1rem; margin-bottom: 1rem; font-family: 'Courier New', monospace; border-radius: 0px;">
-                <strong style="color: #FF6B35; text-shadow: 0 0 8px #FF6B35;">> [NOTE]</strong> <span style="color: #FF6B35;">Images are stored in a temporary session directory and will be automatically cleared when you switch data sources.</span>
+                <strong style="color: #FF6B35; text-shadow: none;">> [NOTE]</strong> <span style="color: #FF6B35;">Images are stored in a temporary session directory and will be automatically cleared when you switch data sources.</span>
             </div>
             """, unsafe_allow_html=True)
             
@@ -906,7 +908,7 @@ def main():
             st.subheader("Download Images from URLs")
             st.markdown("""
             <div style="background: rgba(255, 107, 53, 0.05); border-left: 3px solid #FF6B35; padding: 1rem; margin-bottom: 1rem; font-family: 'Courier New', monospace; border-radius: 0px;">
-                <strong style="color: #FF6B35; text-shadow: 0 0 8px #FF6B35;">> [INFO]</strong> <span style="color: #FF6B35;">Enter image URLs below. Images will be downloaded and saved with the filename format: FirstName_LastName.ext</span>
+                <strong style="color: #FF6B35; text-shadow: none;">> [INFO]</strong> <span style="color: #FF6B35;">Enter image URLs below. Images will be downloaded and saved with the filename format: FirstName_LastName.ext</span>
             </div>
             """, unsafe_allow_html=True)
             
