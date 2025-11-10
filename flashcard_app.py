@@ -572,7 +572,7 @@ def check_password() -> bool:
     if st.session_state.authenticated:
         return True
     
-    # Basic terminal prompt with blinking cursor - inline with input
+    # Basic terminal prompt with blinking cursor
     st.markdown("""
     <style>
     .terminal-wrapper {
@@ -583,9 +583,6 @@ def check_password() -> bool:
         font-size: 16px;
         gap: 8px;
     }
-    .terminal-arrow {
-        color: #FF6B35;
-    }
     .blink-cursor {
         animation: blink 1s infinite;
         color: #FF6B35;
@@ -595,47 +592,19 @@ def check_password() -> bool:
         0%, 50% { opacity: 1; }
         51%, 100% { opacity: 0; }
     }
-    .terminal-input-wrapper {
-        flex: 1;
-        display: inline-flex;
-        align-items: center;
-    }
     </style>
     <div class="terminal-wrapper">
-        <span class="terminal-arrow">></span>
-        <div class="terminal-input-wrapper" id="terminal-input-wrapper">
-            <span class="blink-cursor" id="blink-cursor">_</span>
-        </div>
+        <span>></span>
+        <span class="blink-cursor" id="blink-cursor">_</span>
     </div>
     <script>
-    // Hide cursor when typing, show when empty
     setTimeout(function() {
         var input = document.querySelector('input[type="password"]');
         var cursor = document.getElementById('blink-cursor');
-        if (input) {
-            input.style.display = 'inline';
-            input.style.width = 'auto';
-            input.style.minWidth = '200px';
+        if (input && cursor) {
             input.focus();
-            
             input.addEventListener('input', function() {
-                if (this.value.length > 0) {
-                    cursor.style.display = 'none';
-                } else {
-                    cursor.style.display = 'inline-block';
-                }
-            });
-            
-            input.addEventListener('focus', function() {
-                if (this.value.length === 0) {
-                    cursor.style.display = 'inline-block';
-                }
-            });
-            
-            input.addEventListener('blur', function() {
-                if (this.value.length === 0) {
-                    cursor.style.display = 'inline-block';
-                }
+                cursor.style.display = this.value.length > 0 ? 'none' : 'inline-block';
             });
         }
     }, 100);
