@@ -140,11 +140,36 @@ st.markdown("""
     }
     
     /* Password input on login screen - completely invisible */
+    .stTextInput {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    .stTextInput > div {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    .stTextInput > div > div {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
     .stTextInput > div > div[data-baseweb="base-input"] {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
         padding: 0 !important;
+        margin: 0 !important;
     }
     
     .stTextInput > div > div > input[type="password"] {
@@ -155,6 +180,7 @@ st.markdown("""
         font-family: 'Courier New', monospace !important;
         font-size: 16px !important;
         padding: 0 !important;
+        margin: 0 !important;
         box-shadow: none !important;
         width: 100% !important;
     }
@@ -165,16 +191,12 @@ st.markdown("""
         outline: none !important;
     }
     
-    /* Hide the eye icon */
-    .stTextInput button {
+    /* Hide the eye icon and any buttons */
+    .stTextInput button,
+    .stTextInput svg,
+    .stTextInput [data-baseweb="input"] button {
         display: none !important;
-    }
-    
-    /* Hide any borders or containers */
-    .stTextInput > div {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
+        visibility: hidden !important;
     }
     
     .stTextInput label {
