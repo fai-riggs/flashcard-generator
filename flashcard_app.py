@@ -592,10 +592,10 @@ def download_image_from_url(url: str, directory: Path, filename: str) -> Optiona
         if not filename.endswith(f'.{ext}'):
             filename = f"{filename.rsplit('.', 1)[0] if '.' in filename else filename}.{ext}"
         
-    file_path = directory / filename
+        file_path = directory / filename
         
         # Save the image
-    with open(file_path, "wb") as f:
+        with open(file_path, "wb") as f:
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
         
