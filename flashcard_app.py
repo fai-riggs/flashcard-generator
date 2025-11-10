@@ -1073,10 +1073,10 @@ def main():
                         time.sleep(0.2)
                         
                         loading_placeholder.markdown(show_hacker_loader("LOADING ATTENDEES...", 0.4), unsafe_allow_html=True)
-                    attendees = load_attendees(
-                        st.session_state.csv_path,
-                        st.session_state.headshot_dir,
-                    )
+                        attendees = load_attendees(
+                            st.session_state.csv_path,
+                            st.session_state.headshot_dir,
+                        )
                         
                         loading_placeholder.markdown(show_hacker_loader("PROCESSING IMAGES...", 0.7), unsafe_allow_html=True)
                         time.sleep(0.3)
