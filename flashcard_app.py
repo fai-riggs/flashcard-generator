@@ -419,21 +419,12 @@ def check_password() -> bool:
     
     # Simple terminal-style password input
     st.markdown("""
-    <style>
-    .terminal-container {
-        font-family: 'Courier New', monospace;
-        color: #FF6B35;
-        background: #0A0E27;
-        padding: 2rem;
-        min-height: 60vh;
-    }
-    </style>
-    <div class="terminal-container">
+    <div style="font-family: 'Courier New', monospace; color: #FF6B35; padding: 2rem;">
+        <p>> ACCESS DENIED</p>
+        <p>> AUTHENTICATION REQUIRED</p>
+        <br>
+    </div>
     """, unsafe_allow_html=True)
-    
-    st.markdown("`> ACCESS DENIED`")
-    st.markdown("`> AUTHENTICATION REQUIRED`")
-    st.markdown("")
     
     password_input = st.text_input(
         "> PASSWORD:",
@@ -447,12 +438,17 @@ def check_password() -> bool:
             st.session_state.authenticated = True
             st.rerun()
         else:
-            st.markdown("`> ACCESS DENIED - INVALID CREDENTIALS`")
+            st.markdown("""
+            <div style="font-family: 'Courier New', monospace; color: #FF6B35;">
+                <p>> ACCESS DENIED - INVALID CREDENTIALS</p>
+            </div>
+            """, unsafe_allow_html=True)
     
-    st.markdown("")
-    st.markdown("`> [SYSTEM] Contact administrator for access`")
-    
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("""
+    <div style="font-family: 'Courier New', monospace; color: #FF6B35; margin-top: 2rem;">
+        <p>> [SYSTEM] Contact administrator for access</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     return False
 
