@@ -508,7 +508,32 @@ def check_password() -> bool:
     if st.session_state.authenticated:
         return True
     
-    # Simple password input only
+    # Basic terminal prompt with blinking cursor
+    st.markdown("""
+    <style>
+    .terminal-prompt {
+        font-family: 'Courier New', monospace;
+        color: #FF6B35;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .blink-cursor {
+        animation: blink 1s infinite;
+        color: #FF6B35;
+    }
+    @keyframes blink {
+        0%, 50% { opacity: 1; }
+        51%, 100% { opacity: 0; }
+    }
+    </style>
+    <div class="terminal-prompt">
+        <span>></span>
+        <span class="blink-cursor">_</span>
+    </div>
+    """, unsafe_allow_html=True)
+    
     password_input = st.text_input(
         "",
         type="password",
@@ -517,10 +542,10 @@ def check_password() -> bool:
         placeholder=""
     )
     
-    if st.button("", key="auth_button"):
-        if password_input == get_password():
-            st.session_state.authenticated = True
-            st.rerun()
+    # Check password on Enter (when input changes and is not empty)
+    if password_input and password_input == get_password():
+        st.session_state.authenticated = True
+        st.rerun()
     
     return False
 
