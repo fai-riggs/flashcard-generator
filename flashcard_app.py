@@ -45,6 +45,47 @@ if "headshot_dir" not in st.session_state:
     st.session_state.headshot_dir = None
 if "csv_path" not in st.session_state:
     st.session_state.csv_path = None
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+
+def get_password() -> str:
+    """Get password from Streamlit secrets or use default."""
+    try:
+        return st.secrets.get("app_password", "changeme")
+    except (AttributeError, FileNotFoundError):
+        # Fallback if secrets.toml doesn't exist
+        return "changeme"
+
+
+def check_password() -> bool:
+    """Check if user is authenticated."""
+    if st.session_state.authenticated:
+        return True
+    
+    # Password input form
+    with st.container():
+        st.markdown("### 🔒 Authentication Required")
+        st.markdown("Please enter the password to access this application.")
+        
+        password_input = st.text_input(
+            "Password",
+            type="password",
+            key="password_input",
+            label_visibility="visible"
+        )
+        
+        if st.button("Login", type="primary"):
+            if password_input == get_password():
+                st.session_state.authenticated = True
+                st.rerun()
+            else:
+                st.error("❌ Incorrect password. Please try again.")
+        
+        st.markdown("---")
+        st.caption("💡 Contact the administrator if you need access.")
+    
+    return False
 
 
 def save_uploaded_file(uploaded_file, directory: Path, filename: str) -> Path:
@@ -67,6 +108,10 @@ def get_image_preview(image_path: Path, max_size: tuple[int, int] = (150, 150)) 
 
 
 def main():
+    # Check authentication first
+    if not check_password():
+        st.stop()
+    
     st.title("📇 Flashcard & Facebook Generator")
     st.markdown("Create printable flashcards and facebooks for events with attendee names and headshots.")
 

@@ -40,14 +40,29 @@ This guide will help you deploy the Flashcard & Facebook Generator app to Stream
    - **App URL**: Choose a custom subdomain (e.g., `gala-flashcards`)
 5. Click "Deploy!"
 
-## Step 3: Get Your App URL
+## Step 3: Set Up Password Protection
+
+The app includes password protection. To set your password:
+
+1. After deploying, go to your app's settings on Streamlit Cloud
+2. Click "Secrets" in the left sidebar
+3. Add the following in the secrets editor:
+   ```toml
+   app_password = "your-secure-password-here"
+   ```
+4. Click "Save"
+5. The app will automatically redeploy with the new password
+
+**Note**: The default password is `changeme` - make sure to change it!
+
+## Step 4: Get Your App URL
 
 After deployment (takes 1-2 minutes), you'll get a URL like:
 ```
 https://YOUR_APP_NAME.streamlit.app
 ```
 
-## Step 4: Add Link to Google Sites
+## Step 5: Add Link to Google Sites
 
 1. Go to your Google Sites page: https://sites.google.com/thefai.org/faiwiki/events
 2. Edit the page
