@@ -139,13 +139,12 @@ st.markdown("""
         outline: none !important;
     }
     
-    /* Password input on login screen - completely invisible */
+    /* Password input on login screen - terminal style with border */
     .stTextInput {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-        padding: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
         margin: 0 !important;
+        padding: 0 !important;
     }
     
     .stTextInput > div {
@@ -166,13 +165,13 @@ st.markdown("""
     
     .stTextInput > div > div[data-baseweb="base-input"] {
         background: transparent !important;
-        border: none !important;
+        border: 1px solid #FF6B35 !important;
         box-shadow: none !important;
-        padding: 0 !important;
+        padding: 4px 8px !important;
         margin: 0 !important;
         display: inline-flex !important;
         align-items: center !important;
-        vertical-align: middle !important;
+        border-radius: 0px !important;
     }
     
     .stTextInput > div > div > input[type="password"] {
@@ -188,18 +187,17 @@ st.markdown("""
         width: auto !important;
         min-width: 200px !important;
         display: inline !important;
-        vertical-align: middle !important;
-    }
-    
-    .stTextInput {
-        display: inline !important;
-        vertical-align: middle !important;
     }
     
     .stTextInput > div > div > input[type="password"]:focus {
         border: none !important;
         box-shadow: none !important;
         outline: none !important;
+    }
+    
+    .stTextInput > div > div[data-baseweb="base-input"]:focus-within {
+        border: 1px solid #FF6B35 !important;
+        box-shadow: none !important;
     }
     
     /* Hide the eye icon and any buttons */
@@ -582,13 +580,16 @@ def check_password() -> bool:
     # Basic terminal prompt with blinking cursor - inline with input
     st.markdown("""
     <style>
-    .terminal-line {
+    .terminal-container {
         display: flex;
         align-items: center;
         font-family: 'Courier New', monospace;
         color: #FF6B35;
         font-size: 16px;
         gap: 8px;
+    }
+    .terminal-arrow {
+        color: #FF6B35;
     }
     .blink-cursor {
         animation: blink 1s infinite;
@@ -600,24 +601,25 @@ def check_password() -> bool:
         51%, 100% { opacity: 0; }
     }
     </style>
-    <div class="terminal-line">
-        <span>></span>
+    <div class="terminal-container" id="terminal-container">
+        <span class="terminal-arrow">></span>
         <span class="blink-cursor" id="blink-cursor">_</span>
     </div>
     <script>
     setTimeout(function() {
-        var input = document.querySelector('input[type="password"]');
+        var inputContainer = document.querySelector('.stTextInput');
         var cursor = document.getElementById('blink-cursor');
-        var terminalLine = document.querySelector('.terminal-line');
-        if (input && cursor && terminalLine) {
-            // Move input into terminal line
-            input.style.display = 'inline';
-            input.style.verticalAlign = 'middle';
-            terminalLine.appendChild(input);
-            input.focus();
-            input.addEventListener('input', function() {
-                cursor.style.display = this.value.length > 0 ? 'none' : 'inline-block';
-            });
+        var terminalContainer = document.getElementById('terminal-container');
+        if (inputContainer && cursor && terminalContainer) {
+            // Move input container into terminal container
+            terminalContainer.appendChild(inputContainer);
+            var input = inputContainer.querySelector('input[type="password"]');
+            if (input) {
+                input.focus();
+                input.addEventListener('input', function() {
+                    cursor.style.display = this.value.length > 0 ? 'none' : 'inline-block';
+                });
+            }
         }
     }, 100);
     </script>
