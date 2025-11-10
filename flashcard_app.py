@@ -765,11 +765,11 @@ def main():
                 st.session_state.airtable_url = None
                 st.session_state.airtable_api_key = None
             
-            # Display preview
-            try:
-                df = pd.read_csv(csv_path, encoding="utf-8-sig")
+                # Display preview
+                try:
+                    df = pd.read_csv(csv_path, encoding="utf-8-sig")
                     st.success(f"CSV loaded: {len(df)} rows")
-                st.dataframe(df.head(10), use_container_width=True)
+                    st.dataframe(df.head(10), use_container_width=True)
                 
                 # Check required columns
                 required_cols = ["First Name", "Last Name"]
