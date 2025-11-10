@@ -14,6 +14,8 @@ from typing import Optional
 import streamlit as st
 import pandas as pd
 from PIL import Image
+import requests
+from urllib.parse import urlparse
 
 # Import the flashcard generation functions
 from generate_flashcards import (
@@ -463,13 +465,59 @@ def check_password() -> bool:
     return False
 
 
-def save_uploaded_file(uploaded_file, directory: Path, filename: str) -> Path:
-    """Save an uploaded file to the specified directory."""
-    directory.mkdir(parents=True, exist_ok=True)
-    file_path = directory / filename
-    with open(file_path, "wb") as f:
-        f.write(uploaded_file.getbuffer())
-    return file_path
+def download_image_from_url(url: str, directory: Path, filename: str) -> Optional[Path]:
+    """Download an image from a URL and save it to the specified directory."""
+    try:
+        directory.mkdir(parents=True, exist_ok=True)
+        
+        # Download the image
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+        response = requests.get(url, headers=headers, timeout=30, stream=True)
+        response.raise_for_status()
+        
+        # Determine file extension from URL or content type
+        parsed_url = urlparse(url)
+        url_path = parsed_url.path
+        if url_path and '.' in url_path:
+            ext = url_path.split('.')[-1].lower()
+            if ext not in ['jpg', 'jpeg', 'png', 'webp', 'gif']:
+                ext = 'jpg'  # Default
+        else:
+            content_type = response.headers.get('content-type', '')
+            if 'jpeg' in content_type or 'jpg' in content_type:
+                ext = 'jpg'
+            elif 'png' in content_type:
+                ext = 'png'
+            elif 'webp' in content_type:
+                ext = 'webp'
+            else:
+                ext = 'jpg'  # Default
+        
+        # Ensure filename has correct extension
+        if not filename.endswith(f'.{ext}'):
+            filename = f"{filename.rsplit('.', 1)[0] if '.' in filename else filename}.{ext}"
+        
+        file_path = directory / filename
+        
+        # Save the image
+        with open(file_path, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+        
+        # Verify it's a valid image
+        try:
+            img = Image.open(file_path)
+            img.verify()
+        except Exception:
+            file_path.unlink()
+            return None
+        
+        return file_path
+    except Exception as e:
+        st.error(f"Error downloading image from {url}: {e}")
+        return None
 
 
 def get_temp_session_dir() -> Path:
@@ -761,19 +809,105 @@ def main():
             </div>
             """, unsafe_allow_html=True)
             
-            # Upload new images
-            st.subheader("Upload New Images")
-            uploaded_images = st.file_uploader(
-                "Upload headshot images",
-                type=["jpg", "jpeg", "png", "webp"],
-                accept_multiple_files=True,
-                help="Images should be named as FirstName_LastName.ext (e.g., John_Doe.jpg)",
+            # Download images from URLs
+            st.subheader("Download Images from URLs")
+            st.markdown("""
+            <div style="background: rgba(255, 107, 53, 0.1); border-left: 4px solid #FF6B35; padding: 1rem; margin-bottom: 1rem; font-family: 'Courier New', monospace;">
+                <strong style="color: #FF6B35;">[INFO]</strong> Enter image URLs below. Images will be downloaded and saved with the filename format: FirstName_LastName.ext
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Single URL input
+            image_url = st.text_input(
+                "Image URL",
+                placeholder="https://example.com/images/John_Doe.jpg",
+                help="Enter the full URL of the image to download",
+                key="single_image_url"
             )
             
-            if uploaded_images:
-                for uploaded_file in uploaded_images:
-                    file_path = save_uploaded_file(uploaded_file, headshot_dir, uploaded_file.name)
-                    st.success(f"Saved: {uploaded_file.name}")
+            if st.button("Download Image", key="download_single"):
+                if image_url:
+                    loading_placeholder = st.empty()
+                    loading_placeholder.markdown(show_hacker_loader("DOWNLOADING IMAGE...", 0.3), unsafe_allow_html=True)
+                    import time
+                    time.sleep(0.2)
+                    
+                    # Extract filename from URL or prompt for name
+                    parsed_url = urlparse(image_url)
+                    url_filename = Path(parsed_url.path).name
+                    
+                    if not url_filename or '.' not in url_filename:
+                        # Prompt for filename
+                        filename = st.text_input(
+                            "Enter filename (FirstName_LastName.ext)",
+                            key="url_filename_input",
+                            help="Enter filename in format: FirstName_LastName.jpg"
+                        )
+                        if filename:
+                            loading_placeholder.markdown(show_hacker_loader("SAVING IMAGE...", 0.7), unsafe_allow_html=True)
+                            time.sleep(0.2)
+                            file_path = download_image_from_url(image_url, headshot_dir, filename)
+                            loading_placeholder.empty()
+                            if file_path:
+                                st.success(f"Downloaded: {file_path.name}")
+                            else:
+                                st.error("Failed to download image. Check URL and try again.")
+                    else:
+                        loading_placeholder.markdown(show_hacker_loader("SAVING IMAGE...", 0.7), unsafe_allow_html=True)
+                        time.sleep(0.2)
+                        file_path = download_image_from_url(image_url, headshot_dir, url_filename)
+                        loading_placeholder.empty()
+                        if file_path:
+                            st.success(f"Downloaded: {file_path.name}")
+                        else:
+                            st.error("Failed to download image. Check URL and try again.")
+                else:
+                    st.warning("Please enter an image URL")
+            
+            st.markdown("---")
+            
+            # Bulk URL input
+            st.subheader("Bulk Download from URLs")
+            url_text = st.text_area(
+                "Enter image URLs (one per line)",
+                placeholder="https://example.com/images/John_Doe.jpg\nhttps://example.com/images/Jane_Smith.png",
+                help="Enter multiple image URLs, one per line. Filenames will be extracted from URLs.",
+                height=150
+            )
+            
+            if st.button("Download All Images", key="download_bulk"):
+                if url_text:
+                    urls = [url.strip() for url in url_text.split('\n') if url.strip()]
+                    if urls:
+                        loading_placeholder = st.empty()
+                        total = len(urls)
+                        success_count = 0
+                        
+                        for idx, url in enumerate(urls):
+                            progress = (idx + 1) / total
+                            loading_placeholder.markdown(show_hacker_loader(f"DOWNLOADING [{idx+1}/{total}]...", progress * 0.9), unsafe_allow_html=True)
+                            
+                            parsed_url = urlparse(url)
+                            url_filename = Path(parsed_url.path).name
+                            
+                            if url_filename and '.' in url_filename:
+                                file_path = download_image_from_url(url, headshot_dir, url_filename)
+                                if file_path:
+                                    success_count += 1
+                            else:
+                                st.warning(f"Skipped {url} - could not determine filename")
+                            
+                            import time
+                            time.sleep(0.1)
+                        
+                        loading_placeholder.markdown(show_hacker_loader("COMPLETE", 1.0), unsafe_allow_html=True)
+                        time.sleep(0.3)
+                        loading_placeholder.empty()
+                        st.success(f"Downloaded {success_count} of {total} images")
+                    else:
+                        st.warning("No valid URLs found")
+                else:
+                    st.warning("Please enter image URLs")
             
             # Display existing images
             st.subheader("Existing Images")
