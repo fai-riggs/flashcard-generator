@@ -443,8 +443,8 @@ def main():
                     missing_cols = [col for col in required_cols if col not in df.columns]
                     if missing_cols:
                         st.error(f"Missing required columns: {', '.join(missing_cols)}")
-                else:
-                    st.info("Required columns found")
+                    else:
+                        st.info("Required columns found")
                 except Exception as e:
                     st.error(f"Error reading CSV: {e}")
         
