@@ -745,8 +745,8 @@ def main():
         st.markdown("---")
         
         if data_source == "Upload CSV File":
-        # CSV Upload
-        st.subheader("CSV File")
+            # CSV Upload
+            st.subheader("CSV File")
         uploaded_csv = st.file_uploader(
             "Upload attendee CSV file",
             type=["csv"],
