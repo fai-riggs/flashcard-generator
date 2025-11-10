@@ -1203,33 +1203,33 @@ def main():
                     if generate_combined:
                         current_task += 1
                         loading_placeholder.markdown(show_hacker_loader(f"GENERATING COMBINED PDF... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
-                            combined_path = temp_dir / "flashcards_duplex.pdf"
-                            draw_combined(attendees_to_use, combined_path, duplex_mode=duplex_mode)
-                            pdf_files["Combined PDF"] = combined_path
+                        combined_path = temp_dir / "flashcards_duplex.pdf"
+                        draw_combined(attendees_to_use, combined_path, duplex_mode=duplex_mode)
+                        pdf_files["Combined PDF"] = combined_path
                         time.sleep(0.2)
-                        
+                    
                     if generate_fronts:
                         current_task += 1
                         loading_placeholder.markdown(show_hacker_loader(f"GENERATING FRONTS... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
-                            fronts_path = temp_dir / "flashcards_fronts.pdf"
-                            draw_fronts(attendees_to_use, fronts_path)
-                            pdf_files["Fronts PDF"] = fronts_path
+                        fronts_path = temp_dir / "flashcards_fronts.pdf"
+                        draw_fronts(attendees_to_use, fronts_path)
+                        pdf_files["Fronts PDF"] = fronts_path
                         time.sleep(0.2)
-                        
+                    
                     if generate_backs:
                         current_task += 1
                         loading_placeholder.markdown(show_hacker_loader(f"GENERATING BACKS... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
-                            backs_path = temp_dir / "flashcards_backs.pdf"
-                            draw_backs(attendees_to_use, backs_path, duplex_mode=duplex_mode)
-                            pdf_files["Backs PDF"] = backs_path
+                        backs_path = temp_dir / "flashcards_backs.pdf"
+                        draw_backs(attendees_to_use, backs_path, duplex_mode=duplex_mode)
+                        pdf_files["Backs PDF"] = backs_path
                         time.sleep(0.2)
-                        
+                    
                     if generate_guides:
                         current_task += 1
                         loading_placeholder.markdown(show_hacker_loader(f"GENERATING CUT GUIDES... [{current_task}/{total_tasks}]", current_task / total_tasks), unsafe_allow_html=True)
-                            guides_path = temp_dir / "flashcards_cut_guides.pdf"
-                            draw_guides(attendees_to_use, guides_path, duplex_mode=duplex_mode)
-                            pdf_files["Cut Guides PDF"] = guides_path
+                        guides_path = temp_dir / "flashcards_cut_guides.pdf"
+                        draw_guides(attendees_to_use, guides_path, duplex_mode=duplex_mode)
+                        pdf_files["Cut Guides PDF"] = guides_path
                         time.sleep(0.2)
                     
                     if generate_facebooks:
@@ -1243,8 +1243,8 @@ def main():
                     loading_placeholder.markdown(show_hacker_loader("COMPLETE", 1.0), unsafe_allow_html=True)
                     time.sleep(0.5)
                     loading_placeholder.empty()
-                        
-                        # Display download buttons
+                    
+                    # Display download buttons
                     st.success(f"Generated {len(pdf_files)} PDF file(s)")
                         
                         for pdf_name, pdf_path in pdf_files.items():
