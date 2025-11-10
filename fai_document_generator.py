@@ -49,6 +49,7 @@ st.set_page_config(
     page_title="FAI Document Generator",
     page_icon="",
     layout="wide",
+    initial_sidebar_state="expanded",  # Always show sidebar
 )
 
 # Custom CSS for eDEX-UI sci-fi terminal theme
@@ -102,6 +103,16 @@ st.markdown("""
     [data-testid="stSidebar"] * {
         color: #FF6B35 !important;
         font-family: 'Courier New', monospace !important;
+    }
+    
+    /* Hide sidebar collapse/expand button */
+    [data-testid="stSidebarCollapseButton"],
+    button[title="Close sidebar"],
+    button[title="Open sidebar"],
+    .css-1d391kg,
+    [data-testid="collapsedControl"] {
+        display: none !important;
+        visibility: hidden !important;
     }
     
     /* Buttons - terminal style, sharp corners, no glow */
