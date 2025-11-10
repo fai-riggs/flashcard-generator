@@ -1251,17 +1251,17 @@ def main():
                         with open(pdf_path, "rb") as pdf_file:
                             st.download_button(
                                 label=f"Download {pdf_name}",
-                                    data=pdf_file.read(),
-                                    file_name=pdf_path.name,
-                                    mime="application/pdf",
-                                    key=f"download_{pdf_name}",
-                                )
-                        
-                        st.balloons()
-                        
-                    except Exception as e:
+                                data=pdf_file.read(),
+                                file_name=pdf_path.name,
+                                mime="application/pdf",
+                                key=f"download_{pdf_name}",
+                            )
+                    
+                    st.balloons()
+                    
+                except Exception as e:
                     st.error(f"Error generating PDFs: {e}")
-                        st.exception(e)
+                    st.exception(e)
 
 
 if __name__ == "__main__":
