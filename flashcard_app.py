@@ -39,6 +39,217 @@ st.set_page_config(
     layout="wide",
 )
 
+# Custom CSS for hacker/cyberpunk theme
+st.markdown("""
+<style>
+    /* Main background and text */
+    .stApp {
+        background: linear-gradient(135deg, #0A0E27 0%, #1A1F3A 50%, #0A0E27 100%);
+        background-attachment: fixed;
+    }
+    
+    /* Headers with orange glow */
+    h1, h2, h3 {
+        color: #FF6B35 !important;
+        text-shadow: 0 0 10px #FF6B35, 0 0 20px #FF6B35, 0 0 30px #FF6B35;
+        font-family: 'Courier New', monospace !important;
+        font-weight: bold !important;
+        letter-spacing: 2px;
+    }
+    
+    /* Main content areas */
+    .main .block-container {
+        background-color: rgba(26, 31, 58, 0.8);
+        border: 1px solid #FF6B35;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+        padding: 2rem;
+        margin-top: 2rem;
+    }
+    
+    /* Sidebar styling */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #1A1F3A 0%, #0A0E27 100%);
+        border-right: 2px solid #FF6B35;
+        box-shadow: 0 0 15px rgba(255, 107, 53, 0.2);
+    }
+    
+    /* Buttons - orange with glow */
+    .stButton > button {
+        background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+        color: #0A0E27 !important;
+        border: 2px solid #FF6B35;
+        border-radius: 4px;
+        font-weight: bold;
+        font-family: 'Courier New', monospace;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+        transition: all 0.3s ease;
+    }
+    
+    .stButton > button:hover {
+        background: linear-gradient(135deg, #FF8C42 0%, #FF6B35 100%);
+        box-shadow: 0 0 20px rgba(255, 107, 53, 0.8);
+        transform: translateY(-2px);
+    }
+    
+    /* Primary button */
+    .stButton > button[kind="primary"] {
+        background: linear-gradient(135deg, #FF6B35 0%, #FF4500 100%);
+        box-shadow: 0 0 15px rgba(255, 107, 53, 0.7);
+    }
+    
+    /* Text inputs */
+    .stTextInput > div > div > input {
+        background-color: #0A0E27 !important;
+        color: #E0E0E0 !important;
+        border: 1px solid #FF6B35 !important;
+        border-radius: 4px;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .stTextInput > div > div > input:focus {
+        border: 2px solid #FF6B35 !important;
+        box-shadow: 0 0 10px rgba(255, 107, 53, 0.5) !important;
+    }
+    
+    /* File uploader */
+    .stFileUploader {
+        background-color: rgba(10, 14, 39, 0.5);
+        border: 1px dashed #FF6B35;
+        border-radius: 4px;
+        padding: 1rem;
+    }
+    
+    /* Selectbox and radio */
+    .stSelectbox > div > div > select,
+    .stRadio > div > label {
+        background-color: #0A0E27 !important;
+        color: #E0E0E0 !important;
+        border: 1px solid #FF6B35 !important;
+        font-family: 'Courier New', monospace;
+    }
+    
+    /* Checkbox */
+    .stCheckbox > label {
+        color: #E0E0E0 !important;
+        font-family: 'Courier New', monospace;
+    }
+    
+    /* Tabs */
+    .stTabs [data-baseweb="tab-list"] {
+        background-color: #0A0E27;
+        border-bottom: 2px solid #FF6B35;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        color: #E0E0E0 !important;
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+    
+    .stTabs [aria-selected="true"] {
+        color: #FF6B35 !important;
+        border-bottom: 3px solid #FF6B35;
+        text-shadow: 0 0 10px #FF6B35;
+    }
+    
+    /* Success/Info/Error messages */
+    .stSuccess {
+        background-color: rgba(255, 107, 53, 0.1) !important;
+        border-left: 4px solid #FF6B35 !important;
+        color: #FF6B35 !important;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .stInfo {
+        background-color: rgba(255, 107, 53, 0.1) !important;
+        border-left: 4px solid #FF6B35 !important;
+        color: #E0E0E0 !important;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .stError {
+        background-color: rgba(255, 0, 0, 0.1) !important;
+        border-left: 4px solid #FF0000 !important;
+        color: #FF6B6B !important;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .stWarning {
+        background-color: rgba(255, 165, 0, 0.1) !important;
+        border-left: 4px solid #FFA500 !important;
+        color: #FFA500 !important;
+        font-family: 'Courier New', monospace;
+    }
+    
+    /* Dataframes */
+    .stDataFrame {
+        background-color: #0A0E27 !important;
+        border: 1px solid #FF6B35 !important;
+    }
+    
+    /* Metrics */
+    [data-testid="stMetricValue"] {
+        color: #FF6B35 !important;
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+    }
+    
+    [data-testid="stMetricLabel"] {
+        color: #E0E0E0 !important;
+        font-family: 'Courier New', monospace;
+    }
+    
+    /* Expander */
+    .streamlit-expanderHeader {
+        background-color: rgba(26, 31, 58, 0.8) !important;
+        color: #FF6B35 !important;
+        border: 1px solid #FF6B35 !important;
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+    }
+    
+    /* Password input */
+    input[type="password"] {
+        font-family: 'Courier New', monospace;
+        letter-spacing: 2px;
+    }
+    
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #0A0E27;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: #FF6B35;
+        border-radius: 5px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: #FF8C42;
+        box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+    }
+    
+    /* Animated border effect */
+    @keyframes borderGlow {
+        0%, 100% { box-shadow: 0 0 10px rgba(255, 107, 53, 0.3); }
+        50% { box-shadow: 0 0 20px rgba(255, 107, 53, 0.6); }
+    }
+    
+    .main .block-container {
+        animation: borderGlow 3s ease-in-out infinite;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # Initialize session state
 if "attendees_data" not in st.session_state:
     st.session_state.attendees_data = None
@@ -68,27 +279,50 @@ def check_password() -> bool:
     if st.session_state.authenticated:
         return True
     
-    # Password input form
+    # Hacker-style password input form
+    st.markdown("""
+    <div style="text-align: center; padding: 3rem 0;">
+        <h1 style="color: #FF6B35; text-shadow: 0 0 20px #FF6B35; font-family: 'Courier New', monospace; letter-spacing: 5px;">
+            [ACCESS DENIED]
+        </h1>
+        <p style="color: #E0E0E0; font-family: 'Courier New', monospace; margin-top: 2rem; letter-spacing: 2px;">
+            > AUTHENTICATION REQUIRED
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
     with st.container():
-        st.markdown("### 🔒 Authentication Required")
-        st.markdown("Please enter the password to access this application.")
-        
-        password_input = st.text_input(
-            "Password",
-            type="password",
-            key="password_input",
-            label_visibility="visible"
-        )
-        
-        if st.button("Login", type="primary"):
-            if password_input == get_password():
-                st.session_state.authenticated = True
-                st.rerun()
-            else:
-                st.error("❌ Incorrect password. Please try again.")
-        
-        st.markdown("---")
-        st.caption("💡 Contact the administrator if you need access.")
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            st.markdown("""
+            <div style="background: rgba(26, 31, 58, 0.8); border: 2px solid #FF6B35; border-radius: 8px; padding: 2rem; box-shadow: 0 0 30px rgba(255, 107, 53, 0.3);">
+                <p style="color: #FF6B35; font-family: 'Courier New', monospace; text-align: center; margin-bottom: 1.5rem;">
+                    [ENTER CREDENTIALS]
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            password_input = st.text_input(
+                "> PASSWORD:",
+                type="password",
+                key="password_input",
+                label_visibility="visible"
+            )
+            
+            if st.button("> AUTHENTICATE", type="primary"):
+                if password_input == get_password():
+                    st.session_state.authenticated = True
+                    st.rerun()
+                else:
+                    st.error("> ACCESS DENIED - INVALID CREDENTIALS")
+            
+            st.markdown("""
+            <div style="margin-top: 2rem; text-align: center;">
+                <p style="color: #666; font-family: 'Courier New', monospace; font-size: 0.8rem;">
+                    [SYSTEM] Contact administrator for access credentials
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
     
     return False
 
@@ -117,12 +351,31 @@ def main():
     if not check_password():
         st.stop()
     
-    st.title("📇 Flashcard & Facebook Generator")
-    st.markdown("Create printable flashcards and facebooks for events with attendee names and headshots.")
+    # Hacker-style header
+    st.markdown("""
+    <div style="text-align: center; padding: 2rem 0; border-bottom: 2px solid #FF6B35; margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 3rem;">⚡ FLASHCARD GENERATOR ⚡</h1>
+        <p style="color: #FF6B35; font-family: 'Courier New', monospace; letter-spacing: 3px; margin-top: 1rem;">
+            [SYSTEM] INITIALIZING... [READY]
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div style="background: rgba(255, 107, 53, 0.1); border-left: 4px solid #FF6B35; padding: 1rem; margin-bottom: 2rem; font-family: 'Courier New', monospace;">
+        <strong style="color: #FF6B35;">[INFO]</strong> Create printable flashcards and facebooks for events with attendee names and headshots.
+    </div>
+    """, unsafe_allow_html=True)
 
     # Sidebar for settings
     with st.sidebar:
-        st.header("⚙️ Settings")
+        st.markdown("""
+        <div style="border-bottom: 2px solid #FF6B35; padding-bottom: 1rem; margin-bottom: 1rem;">
+            <h2 style="color: #FF6B35; text-shadow: 0 0 10px #FF6B35; font-family: 'Courier New', monospace; letter-spacing: 2px;">
+                [CONFIG]
+            </h2>
+        </div>
+        """, unsafe_allow_html=True)
         
         duplex_mode = st.selectbox(
             "Duplex Printing Mode",
